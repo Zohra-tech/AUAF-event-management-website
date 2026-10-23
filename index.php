@@ -1,30 +1,21 @@
-
 <?php
+session_start();
 $pageTitle = "AUAF Events | American University of Afghanistan";
-$events = [
-    [
-        "category" => "Academic",
-        "date" => "OCT 28, 2026",
-        "title" => "Innovation & Technology Forum",
-        "description" => "Explore emerging technologies, share ideas, and connect with fellow innovators.",
-        "icon" => "bi-lightbulb"
-    ],
-    [
-        "category" => "Student Life",
-        "date" => "NOV 03, 2026",
-        "title" => "Student Clubs Fair",
-        "description" => "Discover student organizations, meet club members, and find your community.",
-        "icon" => "bi-people"
-    ],
-    [
-        "category" => "Community",
-        "date" => "NOV 08, 2026",
-        "title" => "Leadership & Networking",
-        "description" => "Build connections and develop skills for your academic and professional journey.",
-        "icon" => "bi-stars"
-    ]
-];
+
+include 'db_connect.php';
+
+$sql = "SELECT * FROM events ORDER BY date ASC";
+$result = $conn->query($sql);
+
+$events = [];
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $events[] = $row;
+    }
+}
 ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -225,6 +216,23 @@ $events = [
         </div>
     </div>
 </section>
+<!-- Admin Access Section for managing events -->
+<?php if (!isset($_SESSION['username'])): ?>
+    <div class="mt-4 text-center">
+        <a href="login.php" class="btn btn-dark btn-lg">
+            🔐 Login to Manage Events
+        </a>
+    </div>
+<?php else: ?>
+    <?php if ($_SESSION['role'] === 'admin'): ?>
+        <div class="mt-4 text-center">
+            <a href="pages/events.php" class="btn btn-gold btn-lg">
+                ⚙️ Manage Events
+            </a>
+        </div>
+    <?php endif; ?>
+<?php endif; ?>
+
 
 <!-- Call to Action -->
 <section class="community-section">
