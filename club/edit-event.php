@@ -17,7 +17,7 @@ if (!$eventId) {
 
 $stmt = $pdo->prepare(
     'SELECT event_id, event_title, description, event_date,
-            event_time, location, agenda
+            event_time, event_url, agenda
      FROM events
      WHERE event_id = :event_id AND club_id = :club_id
        AND status = \'upcoming\''
@@ -37,14 +37,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = trim($_POST['description'] ?? '');
     $date = trim($_POST['event_date'] ?? '');
     $time = trim($_POST['event_time'] ?? '');
-    $location = trim($_POST['location'] ?? '');
+    $eventurl = trim($_POST['event_url'] ?? '');
     $agenda = trim($_POST['agenda'] ?? '');
 
     $parsedDate = DateTimeImmutable::createFromFormat('!Y-m-d', $date);
     $parsedTime = DateTimeImmutable::createFromFormat('!H:i', $time);
 
-    if ($title === '' || $description === '' || $location === '') {
-        $errors[] = 'Title, description, and location are required.';
+    if ($title === '' || $description === '' || $eventurl === '') {
+        $errors[] = 'Title, description, and event URL are required.';
     }
 
     if (!$parsedDate || $parsedDate->format('Y-m-d') !== $date ||
@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                  description = :description,
                  event_date = :event_date,
                  event_time = :event_time,
-                 location = :location,
+                 event_url = :event_url,
                  agenda = :agenda
              WHERE event_id = :event_id
                AND club_id = :club_id
@@ -75,7 +75,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             'description' => $description,
             'event_date' => $date,
             'event_time' => $time,
-            'location' => $location,
+            'event_url' => $eventurl,
             'agenda' => $agenda !== '' ? $agenda : null,
             'event_id' => $eventId,
             'club_id' => $clubId,
@@ -90,7 +90,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'description' => $description,
         'event_date' => $date,
         'event_time' => $time,
-        'location' => $location,
+        'event_url' => $eventurl,
         'agenda' => $agenda,
     ]);
 }
@@ -141,9 +141,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
         </div>
         <div class="mb-3">
-            <label class="form-label" for="location">Location</label>
-            <input class="form-control" id="location" name="location" required
-                   value="<?= htmlspecialchars($event['location']) ?>">
+            <label class="form-label" for="event_url">Event URL</label>
+            <input class="form-control" id="event_url" name="event_url" required
+                   value="<?= htmlspecialchars($event['event_url']) ?>">
         </div>
         <div class="mb-3">
             <label class="form-label" for="agenda">Agenda</label>
