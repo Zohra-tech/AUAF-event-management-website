@@ -31,7 +31,7 @@ try {
             AND (
                 e.event_title LIKE :title_search
                 OR e.description LIKE :description_search
-                OR e.location LIKE :location_search
+                OR e.event_url LIKE :event_url_search
                 OR c.club_name LIKE :club_search
             )
         ";
@@ -41,7 +41,7 @@ try {
         $params = [
             'title_search' => $searchTerm,
             'description_search' => $searchTerm,
-            'location_search' => $searchTerm,
+            'event_url_search' => $searchTerm,
             'club_search' => $searchTerm
         ];
     }
@@ -170,7 +170,7 @@ function escapeEventPage($value): string
                 </h2>
 
                 <p class="text-muted mb-0">
-                    Search by event name, club, description, or location.
+                    Search by event name, club, description, or event URL.
                 </p>
             </div>
 
@@ -319,7 +319,7 @@ function escapeEventPage($value): string
 
                                 <div class="global-event-meta small mb-4">
                                     <i class="bi bi-geo-alt me-2"></i>
-                                    <?= escapeEventPage($event['location']) ?>
+                                    <?= escapeEventPage($event['event_url']) ?>
                                 </div>
 
                                 <div class="mt-auto d-grid gap-2">
