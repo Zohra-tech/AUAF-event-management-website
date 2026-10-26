@@ -24,7 +24,7 @@ $error = '';
 try {
     // Confirm this event belongs to the logged-in club.
     $stmt = $pdo->prepare(
-        'SELECT event_id, event_title, event_date, event_time, location, status
+        'SELECT event_id, event_title, event_date, event_time, event_url
          FROM events
          WHERE event_id = :event_id
            AND club_id = :club_id
@@ -176,7 +176,7 @@ function escapeRegistrationList($value): string
 
                     <p class="text-muted mb-0">
                         <i class="bi bi-geo-alt me-2"></i>
-                        <?= escapeRegistrationList($event['location']) ?>
+                        <?= escapeRegistrationList($event['event_url']) ?>
                     </p>
                 </div>
 
