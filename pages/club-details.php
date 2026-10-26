@@ -27,7 +27,7 @@ try {
     // Retrieve upcoming events belonging to this club only.
     $stmt = $pdo->prepare(
         "SELECT event_id, event_title, description, event_date,
-                event_time, location, agenda
+                event_time, event_url, agenda
          FROM events
          WHERE club_id = :club_id
            AND status = 'upcoming'
@@ -288,7 +288,7 @@ function escapeClubDetail($value): string
                                 <div class="small mb-3">
                                     <i class="bi bi-geo-alt me-2"></i>
 
-                                    <?= escapeClubDetail($event['location']) ?>
+                                    <?= escapeClubDetail($event['event_url']) ?>
                                 </div>
 
                                 <?php if (!empty($event['agenda'])): ?>
