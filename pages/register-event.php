@@ -24,7 +24,7 @@ try {
     // Load the selected event.
     $stmt = $pdo->prepare(
         "SELECT e.event_id, e.event_title, e.description,
-                e.event_date, e.event_time, e.location,
+                e.event_date, e.event_time, e.event_url, e.agenda,
                 c.club_id, c.club_name
          FROM events e
          INNER JOIN clubs c ON c.club_id = e.club_id
@@ -287,9 +287,11 @@ function escapeRegistration($value): string
 
                         <p class="mb-0">
                             <i class="bi bi-geo-alt me-2"></i>
-                            <strong>Location:</strong><br>
+                            <strong>Event URL:</strong><br>
                             <span class="ms-4">
-                                <?= escapeRegistration($event['location']) ?>
+                                <a href="<?= escapeRegistration($event['event_url']) ?>" target="_blank" rel="noopener noreferrer">
+                                    <?= escapeRegistration($event['event_url']) ?>
+                                </a>
                             </span>
                         </p>
 
