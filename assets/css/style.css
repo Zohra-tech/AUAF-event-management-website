@@ -355,3 +355,448 @@ main .text-center > p {
         transition-duration: 0.01ms !important;
     }
 }
+
+
+/* =========================================
+   AUAF EVENTS PAGE
+   Matches pages/events.php
+========================================= */
+
+.events-page-hero {
+    background: linear-gradient(135deg, #101d36 0%, #1d3154 100%);
+    color: #ffffff;
+    padding: 65px 0 75px;
+}
+
+.events-page-hero .events-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 30px;
+    font-size: 0.9rem;
+    color: #d6ddeb;
+}
+
+.events-page-hero .events-breadcrumb a {
+    color: #e3bb59;
+    text-decoration: none;
+}
+
+.events-page-hero .events-breadcrumb a:hover {
+    text-decoration: underline;
+}
+
+.events-page-hero .section-eyebrow,
+.event-browser .section-eyebrow {
+    display: block;
+    color: #bd9134;
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+.events-page-hero h1 {
+    color: #ffffff;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 20px;
+}
+
+.events-page-hero h1 span {
+    color: #e3bb59;
+}
+
+.events-page-hero p {
+    max-width: 700px;
+    color: #dce4f0;
+    font-size: 1.05rem;
+    line-height: 1.8;
+    margin-bottom: 0;
+}
+
+/* Event browsing section */
+
+.event-browser {
+    background: #f7f8fb;
+    padding: 65px 0 75px;
+    min-height: 400px;
+}
+
+.event-browser-heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    margin-bottom: 28px;
+}
+
+.event-browser .section-title {
+    color: #142542;
+    font-size: clamp(1.7rem, 3vw, 2.3rem);
+    font-weight: 800;
+    margin: 0;
+}
+
+.event-total {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #f5ecd6;
+    color: #76591b;
+    border-radius: 30px;
+    padding: 10px 16px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+/* Search and filters */
+
+.event-filter-panel {
+    background: #ffffff;
+    border: 1px solid #e5e9f0;
+    border-radius: 14px;
+    padding: 25px;
+    margin-bottom: 35px;
+    box-shadow: 0 5px 20px rgba(16, 29, 54, 0.04);
+}
+
+.event-filter-panel .form-label {
+    color: #263650;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.event-search-input {
+    position: relative;
+}
+
+.event-search-input > i {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #7c8798;
+    z-index: 2;
+}
+
+.event-search-input .form-control {
+    padding-left: 42px;
+}
+
+.event-filter-panel .form-control,
+.event-filter-panel .form-select {
+    min-height: 46px;
+    border-color: #dce2eb;
+    border-radius: 8px;
+}
+
+.event-filter-panel .form-control:focus,
+.event-filter-panel .form-select:focus {
+    border-color: #bd9134;
+    box-shadow: 0 0 0 3px rgba(189, 145, 52, 0.15);
+}
+
+.clear-filter-btn {
+    min-height: 46px;
+    border-radius: 8px;
+}
+
+/* Event cards */
+
+.event-list-card {
+    height: 100%;
+    overflow: hidden;
+    background: #ffffff;
+    border: 1px solid #e5e9f0;
+    border-radius: 15px;
+    box-shadow: 0 7px 24px rgba(16, 29, 54, 0.06);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.event-list-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 14px 32px rgba(16, 29, 54, 0.12);
+}
+
+.event-card-art {
+    position: relative;
+    min-height: 155px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #142542, #30496e);
+}
+
+.event-art-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 76px;
+    height: 76px;
+    border: 1px solid rgba(255, 255, 255, 0.35);
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    color: #f0ce77;
+    font-size: 2.2rem;
+}
+
+.event-card-art .event-category {
+    position: absolute;
+    left: 15px;
+    top: 15px;
+    max-width: 65%;
+    overflow-wrap: anywhere;
+    background: #f4e5bd;
+    color: #5e4615;
+    border-radius: 20px;
+    padding: 6px 10px;
+    font-size: 0.75rem;
+    font-weight: 800;
+}
+
+.event-date-badge {
+    position: absolute;
+    right: 15px;
+    bottom: 15px;
+    width: 54px;
+    min-height: 60px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    color: #142542;
+    border-radius: 9px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.event-date-badge span {
+    font-size: 0.7rem;
+    font-weight: 800;
+    color: #927020;
+}
+
+.event-date-badge strong {
+    font-size: 1.45rem;
+    line-height: 1.2;
+}
+
+.event-card-body {
+    display: flex;
+    flex-direction: column;
+    padding: 23px;
+    height: calc(100% - 155px);
+}
+
+.event-card-body .event-date {
+    color: #7b8494;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    margin-bottom: 13px;
+}
+
+.event-card-body .event-date i {
+    color: #b68a2d;
+    margin-right: 5px;
+}
+
+.event-card-body h3 {
+    color: #142542;
+    font-size: 1.25rem;
+    font-weight: 800;
+    line-height: 1.4;
+    margin-bottom: 12px;
+}
+
+.event-card-body > p {
+    color: #687386;
+    font-size: 0.93rem;
+    line-height: 1.7;
+    margin-bottom: 20px;
+}
+
+.event-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 15px;
+    border-top: 1px solid #edf0f5;
+    margin-top: auto;
+}
+
+.event-meta span {
+    display: flex;
+    align-items: flex-start;
+    gap: 9px;
+    color: #4f5c70;
+    font-size: 0.86rem;
+    overflow-wrap: anywhere;
+}
+
+.event-meta i {
+    color: #b68a2d;
+    font-size: 1rem;
+}
+
+.event-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    color: #9a741e;
+    font-weight: 800;
+    text-decoration: none;
+    border-top: 1px solid #edf0f5;
+    margin-top: 18px;
+    padding-top: 17px;
+}
+
+.event-link:hover {
+    color: #142542;
+}
+
+/* Empty state and note */
+
+.no-events {
+    text-align: center;
+    background: #ffffff;
+    border: 1px dashed #cbd3df;
+    border-radius: 15px;
+    padding: 55px 20px;
+}
+
+.no-events > i {
+    display: block;
+    color: #bd9134;
+    font-size: 3rem;
+    margin-bottom: 15px;
+}
+
+.no-events h3 {
+    color: #142542;
+    font-weight: 800;
+}
+
+.no-events p {
+    color: #687386;
+}
+
+.events-note {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    color: #6d7889;
+    background: #ffffff;
+    border: 1px solid #e5e9f0;
+    border-radius: 10px;
+    padding: 15px;
+    margin-top: 35px;
+    font-size: 0.88rem;
+}
+
+.events-note i {
+    color: #b68a2d;
+    font-size: 1.1rem;
+}
+
+/* Responsive design */
+
+@media (max-width: 767px) {
+    .events-page-hero {
+        padding: 45px 0 55px;
+    }
+
+    .event-browser {
+        padding: 45px 0 55px;
+    }
+
+    .event-filter-panel {
+        padding: 18px;
+    }
+
+    .event-browser-heading {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+
+    .event-card-body {
+        padding: 20px;
+    }
+}
+
+
+/* AUAF link styling */
+
+/* Default links */
+a {
+    color: #9a741e;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+a:hover {
+    color: #142542;
+}
+
+/* Navbar links */
+.site-navbar .nav-link {
+    color: #ffffff !important;
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.site-navbar .nav-link:hover,
+.site-navbar .nav-link.active {
+    color: #e3bb59 !important;
+}
+
+/* Footer links */
+.site-footer a:not(.footer-brand) {
+    display: block;
+    color: #dce4f0;
+    text-decoration: none;
+    margin-bottom: 10px;
+    transition: color 0.2s ease;
+}
+
+.site-footer a:not(.footer-brand):hover {
+    color: #e3bb59;
+}
+
+/* Event detail links */
+.event-link {
+    color: #9a741e;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.event-link:hover {
+    color: #FFFFFF;
+}
+
+.footer-brand:hover{
+    color: #FFFFFF;
+}
+/* Keep gold buttons looking like buttons */
+a.btn-gold,
+a.btn.btn-gold {
+    color: #FFFFFF;
+    text-decoration: none;
+}
+
+a.btn-gold:hover,
+a.btn.btn-gold:hover {
+    color: #142542;
+}
+
+/* Center the Explore section in the footer */
+.site-footer .col-6.col-lg-3:first-of-type {
+    text-align: center;
+}
+
+.site-footer .col-6.col-lg-3:first-of-type h4,
+.site-footer .col-6.col-lg-3:first-of-type a {
+    text-align: center;
+}

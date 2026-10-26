@@ -21,7 +21,8 @@ $categories = [];
           rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
           rel="stylesheet">
-    <link rel="stylesheet" href="../assets/css/style.css">
+    <link href="/assets/css/style.css" rel="stylesheet">
+    
 </head>
 
 <body>
@@ -218,13 +219,10 @@ $categories = [];
                 Show all events
             </button>
         </div>
-
-        <div class="events-note">
-            <i class="bi bi-info-circle"></i>
-            Event information shown here is sample content for the frontend prototype.
-        </div>
     </div>
 </section>
+
+<!-- Footer -->
 
 <!-- Footer -->
 <footer class="site-footer">
@@ -238,18 +236,11 @@ $categories = [];
                 </p>
             </div>
 
-            <div class="col-6 col-lg-3">
+            <div class="col-12 col-lg-6 footer-explore">
                 <h4>Explore</h4>
                 <a href="../index.php">Home</a>
                 <a href="events.php">Upcoming Events</a>
                 <a href="clubs.php">Student Clubs</a>
-            </div>
-
-            <div class="col-6 col-lg-3">
-                <h4>Get Involved</h4>
-                <a href="login.php">Sign In</a>
-                <a href="register.php">Create Account</a>
-                <a href="feedback.php">Feedback</a>
             </div>
         </div>
 
@@ -259,6 +250,7 @@ $categories = [];
         </div>
     </div>
 </footer>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="../assets/js/main.js"></script>
