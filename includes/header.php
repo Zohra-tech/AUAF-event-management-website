@@ -27,6 +27,7 @@ $pageTitle = $pageTitle ?? 'AUAF Event Management';
             <a href="/pages/events.php">Events</a>
             <a href="/pages/clubs.php">Clubs</a>
             <a href="/pages/login.php">Sign In</a>
+            <a href="/pages/club-signup.php">Club Sign Up</a>
         </div>
     </div>
 </nav>

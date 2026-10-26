@@ -20,19 +20,10 @@ $pageTitle = "AUAF Event Management";
 
 <body>
 
-
-<nav class="site-navbar">
-    <div class="container d-flex justify-content-between align-items-center flex-wrap gap-3">
-        <a class="brand" href="index.php">AUAF EVENTS</a>
-
-        <div class="nav-links">
-            <a href="index.php">Home</a>
-            <a href="pages/events.php">Events</a>
-            <a href="pages/clubs.php">Clubs</a>
-            <a href="pages/login.php">Sign In</a>
-        </div>
-    </div>
-</nav>
+<?php
+$pageTitle = 'AUAF Event Management';
+require_once __DIR__ . '/includes/header.php';
+?>
 
 <header class="hero">
     <img
