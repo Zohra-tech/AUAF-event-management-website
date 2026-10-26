@@ -107,10 +107,7 @@ $pageTitle = "AUAF Event Management";
     </div>
 </main>
 
-<footer class="site-footer">
-    <p class="mb-1">&copy; <?= date("Y") ?> AUAF Event Management</p>
-    <small>Student activities, events, and community engagement.</small>
-</footer>
+<?php require_once __DIR__ . '/includes/footer.php'; ?>
 
 </body>
 </html>
