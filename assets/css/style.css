@@ -1931,3 +1931,99 @@ a.btn.btn-gold:hover {
         font-size: 1.8rem;
     }
 }
+
+
+/* =========================================
+   EVENT REGISTRATION PAGE
+========================================= */
+
+.registration-hero {
+    background: linear-gradient(135deg, #101d36 0%, #1c3154 100%);
+    padding: 24px 0;
+}
+
+.registration-back-link {
+    color: #e6c16a;
+    text-decoration: none;
+}
+
+.registration-back-link:hover {
+    color: #ffffff;
+}
+
+.registration-eyebrow {
+    color: #a47b25;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+.registration-hero .registration-eyebrow {
+    color: #e6c16a;
+}
+
+.registration-hero-text {
+    color: #d7deea;
+    max-width: 650px;
+    line-height: 1.8;
+    margin-top: 12px;
+}
+
+.registration-event-card,
+.registration-form-card {
+    overflow: hidden;
+}
+
+.registration-event-card p > i {
+    color: #a47b25;
+}
+
+.registration-form-card .form-control {
+    border-color: #dce1e8;
+    border-radius: 10px;
+    padding: 12px 14px;
+}
+
+.registration-form-card .form-control:focus {
+    border-color: #a47b25;
+    box-shadow: 0 0 0 0.2rem rgba(164, 123, 37, 0.15);
+}
+
+.registration-submit-btn {
+    background-color: #e6c16a;
+    border-color: #e6c16a;
+    color: #101d36;
+    padding: 13px 18px;
+}
+
+.registration-submit-btn:hover {
+    background-color: #d6ad4f;
+    border-color: #d6ad4f;
+    color: #101d36;
+}
+
+.registration-events-link {
+    color: #172640;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.registration-events-link:hover {
+    color: #a47b25;
+}
+
+.registration-message {
+    background: #f7f8fa;
+    border: 1px solid #e9edf2;
+}
+
+.registration-message > i {
+    color: #a47b25;
+}
+
+@media (max-width: 576px) {
+    .registration-hero .display-5 {
+        font-size: 2.1rem;
+    }
+}
