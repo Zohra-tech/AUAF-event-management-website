@@ -268,16 +268,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <li>Provide an agenda so students know what to expect.</li>
                     </ul>
                 </div>
-
-                <div class="event-guidelines-card event-preview-note">
-                    <i class="bi bi-shield-check"></i>
-                    <h3>Before Publishing</h3>
-                    <p>
-                        Once connected, your club will be able to save and
-                        manage its own events. Authentication will ensure
-                        clubs can only manage their own records.
-                    </p>
-                </div>
             </aside>
 
         </div>
