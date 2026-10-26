@@ -2027,3 +2027,118 @@ a.btn.btn-gold:hover {
         font-size: 2.1rem;
     }
 }
+
+
+/* =========================================
+   GLOBAL EVENTS PAGE
+========================================= */
+
+.events-page-hero {
+    background: linear-gradient(135deg, #101d36 0%, #1c3154 100%);
+}
+
+.events-eyebrow,
+.events-section-eyebrow {
+    color: #a47b25;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+.events-page-hero .events-eyebrow {
+    color: #e6c16a;
+}
+
+.events-hero-description {
+    color: #d7deea;
+    max-width: 650px;
+    line-height: 1.8;
+    margin-top: 14px;
+    font-size: 1.05rem;
+}
+
+.events-search-section .input-group-text {
+    border-color: #dce1e8;
+}
+
+.events-search-section .form-control {
+    border-color: #dce1e8;
+}
+
+.events-search-section .form-control:focus {
+    border-color: #a47b25;
+    box-shadow: 0 0 0 0.2rem rgba(164, 123, 37, 0.15);
+}
+
+.events-clear-search {
+    color: #8b671c;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.events-clear-search:hover {
+    text-decoration: underline;
+}
+
+.events-count {
+    color: #6b7280;
+    font-size: 0.95rem;
+}
+
+.global-event-card {
+    overflow: hidden;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.global-event-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(16, 29, 54, 0.12) !important;
+}
+
+.global-event-card-top {
+    height: 6px;
+    background: linear-gradient(90deg, #a47b25, #e6c16a);
+}
+
+.global-event-date {
+    color: #8b671c;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.global-event-club {
+    color: #172640;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.global-event-club i,
+.global-event-meta i {
+    color: #a47b25;
+}
+
+.global-event-description {
+    line-height: 1.7;
+    overflow-wrap: anywhere;
+}
+
+.global-event-meta {
+    color: #5c6574;
+    overflow-wrap: anywhere;
+}
+
+.events-empty-state {
+    background: #f7f8fa;
+    border: 1px solid #e9edf2;
+}
+
+.events-empty-state > i {
+    color: #a47b25;
+}
+
+@media (max-width: 576px) {
+    .events-page-hero .display-4 {
+        font-size: 2.2rem;
+    }
+}

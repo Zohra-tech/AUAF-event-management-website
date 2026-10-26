@@ -1,260 +1,382 @@
-
 <?php
-$pageTitle = "Upcoming Events | AUAF";
+$pageTitle = 'Upcoming Events | AUAF';
 
-// No sample events. The database integration will be added later.
+require_once __DIR__ . '/../config/database.php';
+
 $events = [];
+$loadError = false;
+$search = trim($_GET['search'] ?? '');
 
-$categories = [];
+try {
+    $sql = "
+        SELECT
+            e.event_id,
+            e.event_title,
+            e.description,
+            e.event_date,
+            e.event_time,
+            e.location,
+            c.club_id,
+            c.club_name
+        FROM events e
+        INNER JOIN clubs c ON c.club_id = e.club_id
+        WHERE e.status = 'upcoming'
+          AND e.event_date >= CURDATE()
+    ";
+
+    $params = [];
+
+    if ($search !== '') {
+        $sql .= "
+            AND (
+                e.event_title LIKE :title_search
+                OR e.description LIKE :description_search
+                OR e.location LIKE :location_search
+                OR c.club_name LIKE :club_search
+            )
+        ";
+
+        $searchTerm = '%' . $search . '%';
+
+        $params = [
+            'title_search' => $searchTerm,
+            'description_search' => $searchTerm,
+            'location_search' => $searchTerm,
+            'club_search' => $searchTerm
+        ];
+    }
+
+    $sql .= " ORDER BY e.event_date ASC, e.event_time ASC";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    $events = $stmt->fetchAll();
+
+} catch (PDOException $e) {
+    error_log('Unable to load events: ' . $e->getMessage());
+    $loadError = true;
+}
+
+function escapeEventPage($value): string
+{
+    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+}
 ?>
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Browse academic, cultural, and student club events at AUAF.">
-    <title><?= htmlspecialchars($pageTitle) ?></title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-          rel="stylesheet">
-    <link href="/assets/css/style.css" rel="stylesheet">
-    
+    <title><?= escapeEventPage($pageTitle) ?></title>
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 
 <body>
 
 <!-- Navigation -->
-<nav class="navbar navbar-expand-lg navbar-dark site-navbar">
+<nav class="navbar navbar-expand-lg navbar-dark auaf-club-navbar">
     <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-2" href="../index.php">
-            <span class="brand-mark">A</span>
-            <span class="brand-text">
-                AUAF
-                <small>EVENTS & ACTIVITIES</small>
-            </span>
+
+        <a class="navbar-brand fw-bold" href="/index.php">
+            AUAF EVENTS
         </a>
 
-        <button class="navbar-toggler" type="button"
-                data-bs-toggle="collapse" data-bs-target="#mainNavigation"
-                aria-controls="mainNavigation" aria-expanded="false"
-                aria-label="Toggle navigation">
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#eventsNavbar"
+            aria-controls="eventsNavbar"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+        >
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <div class="collapse navbar-collapse" id="mainNavigation">
-            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
-                <li class="nav-item">
-                    <a class="nav-link" href="../index.php">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="events.php">Events</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="clubs.php">Student Clubs</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="../index.php#about">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="login.php">Sign In</a>
-                </li>
-                <li class="nav-item">
-                    <a class="btn btn-gold" href="#event-list">
-                        Find an Event <i class="bi bi-arrow-right ms-1"></i>
-                    </a>
-                </li>
-            </ul>
+        <div class="collapse navbar-collapse" id="eventsNavbar">
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="/index.php">Home</a>
+                <a class="nav-link active" href="/pages/events.php">Upcoming Events</a>
+                <a class="nav-link" href="/pages/clubs.php">Student Clubs</a>
+                <a class="nav-link" href="/pages/about.php">About</a>
+            </div>
         </div>
+
     </div>
 </nav>
 
-<!-- Page heading -->
-<section class="events-page-hero">
-    <div class="container">
-        <div class="events-breadcrumb">
-            <a href="../index.php">Home</a>
-            <i class="bi bi-chevron-right"></i>
-            <span>Events</span>
-        </div>
+<!-- Hero -->
+<header class="events-page-hero">
+    <div class="container py-5">
 
-        <span class="section-eyebrow">YOUR CAMPUS, YOUR EXPERIENCE</span>
-        <h1>Discover What's <span>Happening.</span></h1>
-        <p>
-            Explore university events, student activities, workshops,
-            and opportunities to connect with the AUAF community.
+        <p class="events-eyebrow">DISCOVER YOUR CAMPUS</p>
+
+        <h1 class="display-4 fw-bold text-white">
+            Upcoming Events
+        </h1>
+
+        <p class="events-hero-description">
+            Explore workshops, student activities, and campus events
+            organized by AUAF student clubs.
         </p>
+
+        <a href="/pages/clubs.php" class="btn btn-warning fw-semibold mt-3">
+            <i class="bi bi-people-fill me-2"></i>
+            Explore Student Clubs
+        </a>
+
     </div>
-</section>
+</header>
 
-<!-- Event search and filters -->
-<section class="event-browser" id="event-list">
-    <div class="container">
+<main class="container py-5">
 
-        <div class="event-browser-heading">
-            <div>
-                <span class="section-eyebrow">EXPLORE AND PARTICIPATE</span>
-                <h2 class="section-title">Browse All Events</h2>
+    <!-- Search -->
+    <section class="events-search-section mb-5">
+
+        <div class="row align-items-end g-3">
+
+            <div class="col-lg-7">
+                <p class="events-section-eyebrow">FIND YOUR NEXT EXPERIENCE</p>
+
+                <h2 class="h3 fw-bold mb-2">
+                    Find an Event
+                </h2>
+
+                <p class="text-muted mb-0">
+                    Search by event name, club, description, or location.
+                </p>
             </div>
-            <span class="event-total">
-                <i class="bi bi-calendar2-week"></i>
-                <span id="event-count"><?= count($events) ?></span> events
-            </span>
-        </div>
 
-        <div class="event-filter-panel">
-            <div class="row g-3 align-items-end">
-                <div class="col-lg-6">
-                    <label for="eventSearch" class="form-label">Search events</label>
-                    <div class="event-search-input">
-                        <i class="bi bi-search"></i>
-                        <input type="search" id="eventSearch"
-                               class="form-control"
-                               placeholder="Search by event, club, or keyword..."
-                               autocomplete="off">
+            <div class="col-lg-5">
+
+                <form method="GET" action="/pages/events.php">
+                    <label for="eventSearch" class="form-label fw-semibold">
+                        Search events
+                    </label>
+
+                    <div class="input-group input-group-lg">
+
+                        <span class="input-group-text bg-white">
+                            <i class="bi bi-search"></i>
+                        </span>
+
+                        <input
+                            type="search"
+                            class="form-control"
+                            id="eventSearch"
+                            name="search"
+                            placeholder="Search events or clubs..."
+                            value="<?= escapeEventPage($search) ?>"
+                        >
+
+                        <button type="submit" class="btn btn-warning fw-semibold">
+                            Search
+                        </button>
+
                     </div>
-                </div>
+                </form>
 
-                <div class="col-sm-6 col-lg-3">
-                    <label for="categoryFilter" class="form-label">Category</label>
-                    <select id="categoryFilter" class="form-select">
-                        <option value="all">All categories</option>
-                        <?php foreach ($categories as $category): ?>
-                            <option value="<?= htmlspecialchars(strtolower($category)) ?>">
-                                <?= htmlspecialchars($category) ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <div class="col-sm-6 col-lg-3">
-                    <button type="button" id="clearFilters"
-                            class="btn btn-outline-secondary clear-filter-btn w-100">
-                        <i class="bi bi-arrow-counterclockwise me-1"></i>
-                        Clear filters
-                    </button>
-                </div>
             </div>
-        </div>
-
-        <!-- Event cards -->
-        <div class="row g-4 event-results" id="eventResults">
-
-            <?php foreach ($events as $event): ?>
-                <?php
-                    $timestamp = strtotime($event["date"]);
-                    $searchText = strtolower(
-                        $event["title"] . " " .
-                        $event["category"] . " " .
-                        $event["club"] . " " .
-                        $event["description"] . " " .
-                        $event["location"]
-                    );
-                ?>
-
-                <div class="col-md-6 col-lg-4 event-item"
-                     data-category="<?= htmlspecialchars(strtolower($event["category"])) ?>"
-                     data-search="<?= htmlspecialchars($searchText, ENT_QUOTES, 'UTF-8') ?>">
-
-                    <article class="event-card event-list-card">
-                        <div class="event-card-art">
-                            <div class="event-art-icon">
-                                <i class="bi <?= htmlspecialchars($event["icon"]) ?>"></i>
-                            </div>
-
-                            <span class="event-category">
-                                <?= htmlspecialchars($event["category"]) ?>
-                            </span>
-
-                            <div class="event-date-badge">
-                                <span><?= strtoupper(date("M", $timestamp)) ?></span>
-                                <strong><?= date("d", $timestamp) ?></strong>
-                            </div>
-                        </div>
-
-                        <div class="event-card-body">
-                            <div class="event-date">
-                                <i class="bi bi-clock"></i>
-                                <?= date("l, F j", $timestamp) ?>
-                                &bull;
-                                <?= htmlspecialchars($event["time"]) ?>
-                            </div>
-
-                            <h3><?= htmlspecialchars($event["title"]) ?></h3>
-
-                            <p><?= htmlspecialchars($event["description"]) ?></p>
-
-                            <div class="event-meta">
-                                <span>
-                                    <i class="bi bi-people"></i>
-                                    <?= htmlspecialchars($event["club"]) ?>
-                                </span>
-                                <span>
-                                    <i class="bi bi-geo-alt"></i>
-                                    <?= htmlspecialchars($event["location"]) ?>
-                                </span>
-                            </div>
-
-                            <a href="events.php?id=<?= (int)$event["id"] ?>"
-                               class="event-link">
-                                View event details
-                                <i class="bi bi-arrow-up-right"></i>
-                            </a>
-                        </div>
-                    </article>
-                </div>
-            <?php endforeach; ?>
 
         </div>
 
-        <!-- Empty state -->
-        <div id="noEvents" class="no-events d-none">
-            <i class="bi bi-calendar-x"></i>
-            <h3>No events found</h3>
-            <p>Try another keyword or select a different category.</p>
-            <button type="button" id="emptyClearFilters" class="btn btn-gold">
-                Show all events
-            </button>
-        </div>
-    </div>
-</section>
+        <?php if ($search !== ''): ?>
+            <div class="mt-3">
+                <span class="text-muted">
+                    Search results for:
+                    <strong><?= escapeEventPage($search) ?></strong>
+                </span>
 
-<!-- Footer -->
+                <a href="/pages/events.php" class="events-clear-search ms-2">
+                    Clear search
+                </a>
+            </div>
+        <?php endif; ?>
+
+    </section>
+
+    <!-- Event Results -->
+    <section>
+
+        <div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-4">
+
+            <h2 class="h3 fw-bold mb-0">
+                <?= $search !== '' ? 'Search Results' : 'All Upcoming Events' ?>
+            </h2>
+
+            <?php if (!$loadError): ?>
+                <span class="events-count">
+                    <?= count($events) ?>
+                    <?= count($events) === 1 ? 'event' : 'events' ?>
+                    found
+                </span>
+            <?php endif; ?>
+
+        </div>
+
+        <?php if ($loadError): ?>
+
+            <div class="alert alert-danger">
+                <i class="bi bi-exclamation-triangle me-2"></i>
+                Events could not be loaded right now. Please try again later.
+            </div>
+
+        <?php elseif (empty($events)): ?>
+
+            <div class="events-empty-state text-center rounded-4 p-5">
+
+                <i class="bi bi-calendar2-event display-3"></i>
+
+                <h3 class="h4 fw-bold mt-3">
+                    <?= $search !== '' ? 'No Matching Events' : 'No Upcoming Events Yet' ?>
+                </h3>
+
+                <p class="text-muted mb-4">
+                    <?php if ($search !== ''): ?>
+                        We couldn't find events matching your search.
+                        Try another keyword.
+                    <?php else: ?>
+                        There are no upcoming events available at the moment.
+                        Please check back later.
+                    <?php endif; ?>
+                </p>
+
+                <?php if ($search !== ''): ?>
+                    <a href="/pages/events.php" class="btn btn-warning fw-semibold">
+                        View All Events
+                    </a>
+                <?php else: ?>
+                    <a href="/pages/clubs.php" class="btn btn-warning fw-semibold">
+                        Explore Student Clubs
+                    </a>
+                <?php endif; ?>
+
+            </div>
+
+        <?php else: ?>
+
+            <div class="row g-4">
+
+                <?php foreach ($events as $event): ?>
+
+                    <div class="col-md-6 col-xl-4">
+
+                        <article class="card global-event-card h-100 border-0 shadow-sm rounded-4">
+
+                            <div class="global-event-card-top"></div>
+
+                            <div class="card-body p-4 d-flex flex-column">
+
+                                <div class="global-event-date mb-3">
+                                    <i class="bi bi-calendar-event me-2"></i>
+                                    <?= date('M j, Y', strtotime($event['event_date'])) ?>
+                                </div>
+
+                                <h3 class="h5 fw-bold">
+                                    <?= escapeEventPage($event['event_title']) ?>
+                                </h3>
+
+                                <p class="global-event-club">
+                                    <i class="bi bi-people me-2"></i>
+                                    <?= escapeEventPage($event['club_name']) ?>
+                                </p>
+
+                                <p class="text-muted global-event-description">
+                                    <?= escapeEventPage($event['description']) ?>
+                                </p>
+
+                                <div class="global-event-meta small mb-2">
+                                    <i class="bi bi-clock me-2"></i>
+                                    <?= date('g:i A', strtotime($event['event_time'])) ?>
+                                </div>
+
+                                <div class="global-event-meta small mb-4">
+                                    <i class="bi bi-geo-alt me-2"></i>
+                                    <?= escapeEventPage($event['location']) ?>
+                                </div>
+
+                                <div class="mt-auto d-grid gap-2">
+
+                                    <a
+                                        href="/pages/register-event.php?id=<?= (int) $event['event_id'] ?>"
+                                        class="btn btn-warning fw-semibold"
+                                    >
+                                        <i class="bi bi-ticket-perforated me-2"></i>
+                                        Register for Event
+                                    </a>
+
+                                    <a
+                                        href="/pages/club-details.php?id=<?= (int) $event['club_id'] ?>"
+                                        class="btn btn-outline-secondary"
+                                    >
+                                        View Club
+                                    </a>
+
+                                </div>
+
+                            </div>
+
+                        </article>
+
+                    </div>
+
+                <?php endforeach; ?>
+
+            </div>
+
+        <?php endif; ?>
+
+    </section>
+
+</main>
 
 <!-- Footer -->
 <footer class="site-footer">
-    <div class="container">
+    <div class="container py-4">
+
         <div class="row gy-4">
-            <div class="col-lg-6">
-                <a class="footer-brand" href="../index.php">AUAF EVENTS</a>
-                <p class="footer-description">
+
+            <div class="col-md-6">
+                <a class="footer-brand" href="/index.php">
+                    AUAF EVENTS
+                </a>
+
+                <p class="footer-description mt-2">
                     Discover university events, student organizations,
                     and opportunities to connect with the AUAF community.
                 </p>
             </div>
 
-            <div class="col-12 col-lg-6 footer-explore">
+            <div class="col-md-6 footer-explore">
                 <h4>Explore</h4>
-                <a href="../index.php">Home</a>
-                <a href="events.php">Upcoming Events</a>
-                <a href="clubs.php">Student Clubs</a>
+                <a href="/index.php">Home</a>
+                <a href="/pages/events.php">Upcoming Events</a>
+                <a href="/pages/clubs.php">Student Clubs</a>
             </div>
+
         </div>
 
-        <div class="footer-bottom">
-            <span>&copy; <?= date("Y") ?> AUAF Event Management Website</span>
+        <div class="footer-bottom mt-4">
+            <span>&copy; <?= date('Y') ?> AUAF Event Management Website</span>
             <span>Designed for the AUAF community</span>
         </div>
+
     </div>
 </footer>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="../assets/js/main.js"></script>
 
 </body>
 </html>
-
