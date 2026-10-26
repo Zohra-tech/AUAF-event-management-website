@@ -1,9 +1,12 @@
 <?php
-$pageTitle = 'Club Dashboard | AUAF Events';
-$clubName = 'Your Student Club';
+session_start();
 
-// Real club information and statistics will be loaded
-// from the database after the schema is available.
+if (empty($_SESSION['club_id'])) {
+    header('Location: /club/login.php');
+    exit;
+}
+
+$clubName = $_SESSION['club_name'] ?? 'Your Student Club';
 ?>
 <!DOCTYPE html>
 <html lang="en">

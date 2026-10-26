@@ -1,56 +1,86 @@
+
 <?php
-$pageTitle = 'Create Event | AUAF Events';
+session_start();
+require_once __DIR__ . '/../config/database.php';
+
+if (empty($_SESSION['club_id'])) {
+    header('Location: /club/login.php');
+    exit;
+}
 
 $errors = [];
-$success = false;
+$success = '';
 
 $eventTitle = '';
-$eventDescription = '';
+$description = '';
 $eventDate = '';
 $eventTime = '';
-$eventLocation = '';
-$eventAgenda = '';
+$location = '';
+$agenda = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $eventTitle = trim($_POST['event_title'] ?? '');
-    $eventDescription = trim($_POST['event_description'] ?? '');
+    $description = trim($_POST['description'] ?? '');
     $eventDate = trim($_POST['event_date'] ?? '');
     $eventTime = trim($_POST['event_time'] ?? '');
-    $eventLocation = trim($_POST['event_location'] ?? '');
-    $eventAgenda = trim($_POST['event_agenda'] ?? '');
+    $location = trim($_POST['location'] ?? '');
+    $agenda = trim($_POST['agenda'] ?? '');
 
     if ($eventTitle === '') {
-        $errors[] = 'Please enter an event title.';
+        $errors[] = 'Event title is required.';
     }
 
-    if ($eventDescription === '') {
-        $errors[] = 'Please provide an event description.';
+    if ($description === '') {
+        $errors[] = 'Event description is required.';
     }
 
-    $dateObject = DateTime::createFromFormat('!Y-m-d', $eventDate);
-    if (!$dateObject || $dateObject->format('Y-m-d') !== $eventDate) {
-        $errors[] = 'Please select a valid event date.';
-    } elseif ($eventDate < date('Y-m-d')) {
-        $errors[] = 'The event date cannot be in the past.';
+    $date = DateTimeImmutable::createFromFormat('!Y-m-d', $eventDate);
+    if (!$date || $date->format('Y-m-d') !== $eventDate ||
+        $eventDate < date('Y-m-d')) {
+        $errors[] = 'Please select a valid date that is not in the past.';
     }
 
-    $timeObject = DateTime::createFromFormat('!H:i', $eventTime);
-    if (!$timeObject || $timeObject->format('H:i') !== $eventTime) {
+    $time = DateTimeImmutable::createFromFormat('!H:i', $eventTime);
+    if (!$time || $time->format('H:i') !== $eventTime) {
         $errors[] = 'Please select a valid event time.';
     }
 
-    if ($eventLink === '') {
-        $errors[] = 'Please Enter Event Link';
+    if ($location === '') {
+        $errors[] = 'Event location is required.';
     }
 
-    if ($eventAgenda === '') {
-        $errors[] = 'Please provide the event agenda.';
-    }
+    if (!$errors) {
+        try {
+            $stmt = $pdo->prepare(
+                'INSERT INTO events
+                (club_id, event_title, description, event_date,
+                 event_time, location, agenda, status)
+                VALUES
+                (:club_id, :event_title, :description, :event_date,
+                 :event_time, :location, :agenda, :status)'
+            );
 
-    // Saving the event will be implemented after the database schema
-    // and club authentication are available.
+            $stmt->execute([
+                'club_id' => (int) $_SESSION['club_id'],
+                'event_title' => $eventTitle,
+                'description' => $description,
+                'event_date' => $eventDate,
+                'event_time' => $eventTime,
+                'location' => $location,
+                'agenda' => $agenda !== '' ? $agenda : null,
+                'status' => 'upcoming',
+            ]);
+
+            header('Location: /club/manage-events.php?created=1');
+            exit;
+        } catch (PDOException $e) {
+            error_log('Event creation failed: ' . $e->getMessage());
+            $errors[] = 'Unable to save the event. Please contact the website administrator.';
+        }
+    }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -241,12 +271,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 Prepare Event
                             </button>
                         </div>
-
-                        <p class="event-form-notice">
-                            <i class="bi bi-info-circle"></i>
-                            This form is in preview mode. Events will not be saved
-                            or published until database integration is complete.
-                        </p>
 
                     </form>
                 </div>
