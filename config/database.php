@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-$host = 'localhost';
+$host = '127.0.0.1';
 $port = '3306';
 $dbname = 'AUAF-club_db';
 $username = 'root';
-$password = ''; // Enter your MySQL password if you have one
+$password = ''; // Replace with your actual MySQL password if you have one
 
 $dsn = "mysql:host={$host};port={$port};dbname={$dbname};charset=utf8mb4";
 

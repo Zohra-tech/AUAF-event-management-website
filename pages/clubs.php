@@ -2,6 +2,9 @@
 $pageTitle = 'Student Clubs | AUAF';
 require_once __DIR__ . '/../config/database.php';
 
+$clubs = [];
+$clubsLoadError = false;
+
 try {
     $stmt = $pdo->query(
         'SELECT club_id, club_name, description, google_space_url
@@ -12,138 +15,189 @@ try {
     $clubs = $stmt->fetchAll();
 } catch (PDOException $e) {
     error_log('Unable to retrieve clubs: ' . $e->getMessage());
-    $clubs = [];
     $clubsLoadError = true;
 }
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Discover student clubs and activities at AUAF.">
+
     <title><?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?></title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-          rel="stylesheet">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
-          rel="stylesheet">
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        rel="stylesheet"
+    >
+
     <link rel="stylesheet" href="/assets/css/style.css">
 </head>
 
-<body>
+<body class="clubs-page">
 
-<nav class="navbar navbar-expand-lg navbar-dark site-navbar">
-    <div class="container">
-        <a class="navbar-brand d-flex align-items-center gap-2"
-           href="../index.php">
-            <span class="brand-mark">A</span>
-            <span class="brand-text">
-                AUAF
-                <small>EVENTS & ACTIVITIES</small>
-            </span>
-        </a>
+<!-- Navigation -->
+<nav class="site-navbar">
+    <div class="container d-flex justify-content-between align-items-center flex-wrap gap-3">
 
-        <button class="navbar-toggler" type="button"
-                data-bs-toggle="collapse"
-                data-bs-target="#mainNavigation"
-                aria-controls="mainNavigation"
-                aria-expanded="false"
-                aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
+        <a class="brand" href="/index.php">AUAF EVENTS</a>
 
-        <div class="collapse navbar-collapse" id="mainNavigation">
-            <ul class="navbar-nav ms-auto align-items-lg-center gap-lg-3">
-                <li class="nav-item">
-                    <a class="nav-link" href="../index.php">Home</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="events.php">Events</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link active" href="clubs.php">Student Clubs</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="../index.php#about">About</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="login.php">Sign In</a>
-                </li>
-            </ul>
+        <div class="nav-links">
+            <a href="/index.php">Home</a>
+            <a href="/pages/events.php">Events</a>
+            <a href="/pages/clubs.php" class="active">Student Clubs</a>
+            <a href="/pages/about.php">About</a>
+            <a href="/club/login.php">Club Sign In</a>
         </div>
+
     </div>
 </nav>
 
+<!-- Hero Section -->
 <section class="clubs-page-hero">
     <div class="container">
+
         <div class="clubs-breadcrumb">
-            <a href="../index.php">Home</a>
+            <a href="/index.php">Home</a>
             <i class="bi bi-chevron-right"></i>
             <span>Student Clubs</span>
         </div>
 
-        <span class="section-eyebrow">FIND YOUR COMMUNITY</span>
-        <h1>Discover Student <span>Clubs.</span></h1>
+        <span class="section-eyebrow">DISCOVER YOUR COMMUNITY</span>
+
+        <h1>Find Your People.<br>Discover Your Club.</h1>
+
         <p>
-            Meet students who share your interests, develop new skills,
-            and get involved in the AUAF community.
+            Explore student organizations, connect with fellow students,
+            and discover opportunities to learn, lead, and participate
+            in the AUAF community.
         </p>
+
     </div>
 </section>
 
+<!-- Clubs Section -->
 <section class="clubs-browser">
     <div class="container">
+
         <div class="clubs-heading">
             <div>
-                <span class="section-eyebrow">CONNECT AND PARTICIPATE</span>
-                <h2>Explore Our Clubs</h2>
-                <p>Find a community that matches your interests.</p>
+                <span class="section-eyebrow">STUDENT ORGANIZATIONS</span>
+                <h2 class="section-title">Explore Student Clubs</h2>
+                <p>
+                    Find a community that matches your interests and goals.
+                </p>
             </div>
 
-            <span class="club-count">
+            <div class="club-total">
+                <i class="bi bi-people"></i>
                 <?= count($clubs) ?> clubs
-            </span>
+            </div>
         </div>
 
+        <!-- Club Cards -->
         <div class="club-grid">
-            <?php foreach ($clubs as $club): ?>
-                <article class="club-card">
-                    <div class="club-card-icon <?= htmlspecialchars($club['color']) ?>">
-                        <i class="bi <?= htmlspecialchars($club['icon']) ?>"></i>
-                    </div>
 
-                    <span class="club-category">
-                        <?= htmlspecialchars($club['category']) ?>
-                    </span>
+            <?php if ($clubsLoadError): ?>
 
-                    <h3><?= htmlspecialchars($club['name']) ?></h3>
+                <div class="clubs-note">
+                    <i class="bi bi-exclamation-circle"></i>
+                    Unable to load clubs right now. Please try again later.
+                </div>
 
-                    <p><?= htmlspecialchars($club['description']) ?></p>
+            <?php elseif (empty($clubs)): ?>
 
-                    <a class="club-link"
-                       href="club-details.php?club=<?= urlencode($club['name']) ?>">
-                        Explore Club
-                        <i class="bi bi-arrow-right"></i>
-                    </a>
-                </article>
-            <?php endforeach; ?>
+                <div class="no-clubs">
+                    <i class="bi bi-people"></i>
+                    <h3>No clubs registered yet</h3>
+                    <p>
+                        Registered student clubs will appear here.
+                        Please check back later.
+                    </p>
+                </div>
+
+            <?php else: ?>
+
+                <?php foreach ($clubs as $club): ?>
+
+                    <article class="club-card">
+
+                        <div class="club-card-icon">
+                            <i class="bi bi-people"></i>
+                        </div>
+
+                        <span class="club-category">
+                            AUAF Student Club
+                        </span>
+
+                        <h3>
+                            <?= htmlspecialchars(
+                                $club['club_name'],
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ) ?>
+                        </h3>
+
+                        <p>
+                            <?= htmlspecialchars(
+                                $club['description']
+                                    ?? 'Learn more about this student club.',
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ) ?>
+                        </p>
+
+                        <a
+                            class="club-link"
+                            href="/pages/club-details.php?id=<?= (int) $club['club_id'] ?>"
+                        >
+                            Explore Club
+                            <i class="bi bi-arrow-right"></i>
+                        </a>
+
+                        <?php if (!empty($club['google_space_url'])): ?>
+                            <a
+                                class="club-space-link"
+                                href="<?= htmlspecialchars(
+                                    $club['google_space_url'],
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ) ?>"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                Visit Google Space
+                                <i class="bi bi-box-arrow-up-right"></i>
+                            </a>
+                        <?php endif; ?>
+
+                    </article>
+
+                <?php endforeach; ?>
+
+            <?php endif; ?>
+
         </div>
 
-        <div class="clubs-note">
-            <i class="bi bi-info-circle"></i>
-            These are sample clubs for the frontend prototype.
-            The database will supply the actual club information later.
-        </div>
     </div>
 </section>
 
+<!-- Footer -->
 <footer class="site-footer">
     <div class="container">
+
         <div class="row gy-4">
+
             <div class="col-lg-6">
-                <a class="footer-brand" href="../index.php">AUAF EVENTS</a>
+                <a class="footer-brand" href="/index.php">
+                    AUAF EVENTS
+                </a>
+
                 <p class="footer-description">
                     Discover university events, student organizations,
                     and opportunities to connect with the AUAF community.
@@ -152,16 +206,21 @@ try {
 
             <div class="col-12 col-lg-6 footer-explore">
                 <h4>Explore</h4>
-                <a href="../index.php">Home</a>
-                <a href="events.php">Upcoming Events</a>
-                <a href="clubs.php">Student Clubs</a>
+                <a href="/index.php">Home</a>
+                <a href="/pages/events.php">Upcoming Events</a>
+                <a href="/pages/clubs.php">Student Clubs</a>
             </div>
+
         </div>
 
         <div class="footer-bottom">
-            <span>&copy; <?= date('Y') ?> AUAF Event Management Website</span>
+            <span>
+                &copy; <?= date('Y') ?> AUAF Event Management Website
+            </span>
+
             <span>Designed for the AUAF community</span>
         </div>
+
     </div>
 </footer>
 
