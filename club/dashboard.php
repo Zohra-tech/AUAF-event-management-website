@@ -1,157 +1,269 @@
 <?php
-declare(strict_types=1);
-
-session_start();
-
-// Only signed-in clubs can access this page.
-if (empty($_SESSION['club_id'])) {
-    header('Location: /pages/club-login.php');
-    exit;
-}
-
-$clubId = (int) $_SESSION['club_id'];
-$clubName = $_SESSION['club_name'] ?? 'Club Dashboard';
 $pageTitle = 'Club Dashboard | AUAF Events';
+$clubName = 'Your Student Club';
 
-require_once __DIR__ . '/../config/database.php';
-
-// Count this club's events.
-$eventStmt = $pdo->prepare(
-    'SELECT COUNT(*) FROM events WHERE club_id = :club_id'
-);
-$eventStmt->execute([':club_id' => $clubId]);
-$totalEvents = (int) $eventStmt->fetchColumn();
-
-// Count registrations for this club's events.
-$registrationStmt = $pdo->prepare(
-    'SELECT COUNT(*)
-     FROM event_registrations er
-     INNER JOIN events e ON er.event_id = e.event_id
-     WHERE e.club_id = :club_id'
-);
-$registrationStmt->execute([':club_id' => $clubId]);
-$totalRegistrations = (int) $registrationStmt->fetchColumn();
-
-// Retrieve only this club's events and registration counts.
-$listStmt = $pdo->prepare(
-    'SELECT
-        e.event_id,
-        e.title,
-        e.event_date,
-        e.start_time,
-        e.location,
-        e.status,
-        COUNT(er.registration_id) AS registration_count
-     FROM events e
-     LEFT JOIN event_registrations er ON er.event_id = e.event_id
-     WHERE e.club_id = :club_id
-     GROUP BY
-        e.event_id, e.title, e.event_date,
-        e.start_time, e.location, e.status
-     ORDER BY e.event_date DESC, e.start_time DESC'
-);
-$listStmt->execute([':club_id' => $clubId]);
-$events = $listStmt->fetchAll();
-
-require_once __DIR__ . '/../includes/header.php';
+// Real club information and statistics will be loaded
+// from the database after the schema is available.
 ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<main class="container py-5">
+    <title><?= htmlspecialchars($pageTitle, ENT_QUOTES, 'UTF-8') ?></title>
 
-    <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mb-4">
-        <div>
-            <p class="text-secondary mb-1">CLUB MANAGEMENT</p>
-            <h1 style="color:#10294a;font-weight:800;">
-                Welcome, <?= htmlspecialchars($clubName, ENT_QUOTES, 'UTF-8') ?>
-            </h1>
-            <p class="text-secondary mb-0">
-                Manage your events and track student registrations.
-            </p>
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
+        rel="stylesheet"
+    >
+
+    <link
+        href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+        rel="stylesheet"
+    >
+
+    <link rel="stylesheet" href="/assets/css/style.css">
+</head>
+
+<body class="club-dashboard-page">
+
+<!-- Navigation -->
+<nav class="site-navbar">
+    <div class="container d-flex justify-content-between align-items-center flex-wrap gap-3">
+
+        <a class="brand" href="/index.php">AUAF EVENTS</a>
+
+        <div class="nav-links">
+            <a href="/index.php">Home</a>
+            <a href="/pages/events.php">Events</a>
+            <a href="/pages/clubs.php">Student Clubs</a>
+            <a href="/club/dashboard.php" class="active">Dashboard</a>
+            <a href="/club/login.php">Sign In</a>
         </div>
 
-        <div class="d-flex gap-2 flex-wrap">
-            <a href="/club/add-event.php" class="btn btn-gold">
-                + Add Event
-            </a>
-            <a href="/pages/club-logout.php" class="btn btn-outline-secondary">
-                Sign Out
-            </a>
-        </div>
     </div>
+</nav>
 
-    <div class="row g-4 mb-5">
-        <div class="col-md-6">
-            <section class="feature-card">
-                <p class="text-secondary mb-1">Total Events</p>
-                <h2><?= $totalEvents ?></h2>
-            </section>
+<!-- Dashboard Header -->
+<section class="club-dashboard-hero">
+    <div class="container">
+
+        <div class="dashboard-breadcrumb">
+            <a href="/index.php">Home</a>
+            <i class="bi bi-chevron-right"></i>
+            <span>Club Dashboard</span>
         </div>
 
-        <div class="col-md-6">
-            <section class="feature-card">
-                <p class="text-secondary mb-1">Student Registrations</p>
-                <h2><?= $totalRegistrations ?></h2>
-            </section>
+        <div class="dashboard-welcome">
+            <div>
+                <span class="section-eyebrow">CLUB MANAGEMENT PORTAL</span>
+
+                <h1>Welcome to Your Dashboard</h1>
+
+                <p>
+                    Manage your club, organize events, and connect with
+                    the AUAF student community.
+                </p>
+            </div>
+
+            <div class="dashboard-welcome-icon">
+                <i class="bi bi-buildings"></i>
+            </div>
         </div>
-    </div>
 
-    <div class="d-flex justify-content-between align-items-center mb-3">
-        <h2>Your Events</h2>
-        <a href="/pages/events.php">View public events →</a>
     </div>
+</section>
 
-    <?php if (!$events): ?>
-        <section class="feature-card text-center">
-            <h3>No events yet</h3>
-            <p class="text-secondary">
-                Create your first event to let AUAF students discover it.
-            </p>
-            <a href="/club/add-event.php" class="btn btn-gold">
-                Create Your First Event
+<!-- Dashboard Content -->
+<main class="club-dashboard-content">
+    <div class="container">
+
+        <div class="dashboard-status-notice">
+            <i class="bi bi-info-circle"></i>
+            <div>
+                <strong>Dashboard preview</strong>
+                <p>
+                    Your club's information and statistics will appear here
+                    after database integration and sign-in authentication
+                    are configured.
+                </p>
+            </div>
+        </div>
+
+        <!-- Statistics -->
+        <div class="dashboard-section-heading">
+            <div>
+                <span class="section-eyebrow">YOUR OVERVIEW</span>
+                <h2>Club at a Glance</h2>
+            </div>
+        </div>
+
+        <div class="dashboard-stat-grid">
+
+            <article class="dashboard-stat-card">
+                <div class="dashboard-stat-icon">
+                    <i class="bi bi-calendar-event"></i>
+                </div>
+
+                <h3>Events Created</h3>
+                <p class="stat-value">—</p>
+                <span>Available after database connection</span>
+            </article>
+
+            <article class="dashboard-stat-card">
+                <div class="dashboard-stat-icon">
+                    <i class="bi bi-calendar-check"></i>
+                </div>
+
+                <h3>Upcoming Events</h3>
+                <p class="stat-value">—</p>
+                <span>Available after database connection</span>
+            </article>
+
+            <article class="dashboard-stat-card">
+                <div class="dashboard-stat-icon">
+                    <i class="bi bi-people"></i>
+                </div>
+
+                <h3>Student Registrations</h3>
+                <p class="stat-value">—</p>
+                <span>Available after database connection</span>
+            </article>
+
+        </div>
+
+        <!-- Quick Actions -->
+        <div class="dashboard-section-heading dashboard-actions-heading">
+            <div>
+                <span class="section-eyebrow">GET STARTED</span>
+                <h2>Manage Your Club</h2>
+                <p>Choose an action to continue.</p>
+            </div>
+        </div>
+
+        <div class="dashboard-action-grid">
+
+            <a href="/club/create-event.php" class="dashboard-action-card">
+                <div class="dashboard-action-icon">
+                    <i class="bi bi-plus-circle"></i>
+                </div>
+
+                <div>
+                    <h3>Create an Event</h3>
+                    <p>
+                        Publish a new club event with its date, time,
+                        location, and agenda.
+                    </p>
+                </div>
+
+                <i class="bi bi-arrow-up-right action-arrow"></i>
             </a>
+
+            <a href="/club/manage-events.php" class="dashboard-action-card">
+                <div class="dashboard-action-icon">
+                    <i class="bi bi-calendar2-week"></i>
+                </div>
+
+                <div>
+                    <h3>Manage Events</h3>
+                    <p>
+                        Review your events and access event management tools.
+                    </p>
+                </div>
+
+                <i class="bi bi-arrow-up-right action-arrow"></i>
+            </a>
+
+            <a href="/pages/clubs.php" class="dashboard-action-card">
+                <div class="dashboard-action-icon">
+                    <i class="bi bi-eye"></i>
+                </div>
+
+                <div>
+                    <h3>View Public Clubs</h3>
+                    <p>
+                        See how student organizations are presented
+                        on the public website.
+                    </p>
+                </div>
+
+                <i class="bi bi-arrow-up-right action-arrow"></i>
+            </a>
+
+        </div>
+
+        <!-- Upcoming Events Preview -->
+        <section class="dashboard-events-panel">
+
+            <div class="dashboard-events-heading">
+                <div>
+                    <span class="section-eyebrow">YOUR SCHEDULE</span>
+                    <h2>Upcoming Events</h2>
+                </div>
+
+                <a href="/club/manage-events.php" class="dashboard-view-all">
+                    Manage Events
+                    <i class="bi bi-arrow-right"></i>
+                </a>
+            </div>
+
+            <div class="dashboard-empty-state">
+                <div class="dashboard-empty-icon">
+                    <i class="bi bi-calendar2-x"></i>
+                </div>
+
+                <h3>No event information available yet</h3>
+
+                <p>
+                    Your club's upcoming events will appear here after
+                    event management is connected to the database.
+                </p>
+
+                <a href="/club/create-event.php" class="dashboard-primary-btn">
+                    <i class="bi bi-plus-lg"></i>
+                    Create an Event
+                </a>
+            </div>
+
         </section>
-    <?php else: ?>
-        <div class="table-responsive">
-            <table class="table table-hover align-middle">
-                <thead>
-                    <tr>
-                        <th>Event</th>
-                        <th>Date</th>
-                        <th>Time</th>
-                        <th>Location</th>
-                        <th>Registrations</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($events as $event): ?>
-                        <tr>
-                            <td>
-                                <strong>
-                                    <?= htmlspecialchars($event['title'], ENT_QUOTES, 'UTF-8') ?>
-                                </strong>
-                                <div class="small text-secondary">
-                                    <?= htmlspecialchars($event['status'] ?? 'published', ENT_QUOTES, 'UTF-8') ?>
-                                </div>
-                            </td>
-                            <td>
-                                <?= htmlspecialchars($event['event_date'], ENT_QUOTES, 'UTF-8') ?>
-                            </td>
-                            <td>
-                                <?= htmlspecialchars($event['start_time'] ?? '—', ENT_QUOTES, 'UTF-8') ?>
-                            </td>
-                            <td>
-                                <?= htmlspecialchars($event['location'] ?? '—', ENT_QUOTES, 'UTF-8') ?>
-                            </td>
-                            <td>
-                                <strong><?= (int) $event['registration_count'] ?></strong>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
-    <?php endif; ?>
 
+    </div>
 </main>
 
-<?php require_once __DIR__ . '/../includes/footer.php'; ?>
+<!-- Footer -->
+<footer class="site-footer">
+    <div class="container">
+
+        <div class="row gy-4">
+
+            <div class="col-lg-6">
+                <a class="footer-brand" href="/index.php">AUAF EVENTS</a>
+
+                <p class="footer-description">
+                    Discover university events, student organizations,
+                    and opportunities to connect with the AUAF community.
+                </p>
+            </div>
+
+            <div class="col-12 col-lg-6 footer-explore">
+                <h4>Explore</h4>
+                <a href="/index.php">Home</a>
+                <a href="/pages/events.php">Upcoming Events</a>
+                <a href="/pages/clubs.php">Student Clubs</a>
+            </div>
+
+        </div>
+
+        <div class="footer-bottom">
+            <span>&copy; <?= date('Y') ?> AUAF Event Management Website</span>
+            <span>Designed for the AUAF community</span>
+        </div>
+
+    </div>
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
