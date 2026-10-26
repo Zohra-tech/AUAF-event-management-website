@@ -800,3 +800,383 @@ a.btn.btn-gold:hover {
 .site-footer .col-6.col-lg-3:first-of-type a {
     text-align: center;
 }
+
+
+/* ========================================
+   CLUB REGISTRATION PAGE
+======================================== */
+
+.club-register-section {
+    background: #f5f7fb;
+    padding: 65px 0 80px;
+    min-height: 75vh;
+}
+
+.club-register-wrapper {
+    display: grid;
+    grid-template-columns: 0.9fr 1.1fr;
+    gap: 45px;
+    align-items: start;
+    max-width: 1120px;
+    margin: 0 auto;
+}
+
+.club-register-intro {
+    background: #142542;
+    color: #ffffff;
+    padding: 42px 35px;
+    border-radius: 18px;
+    position: sticky;
+    top: 25px;
+}
+
+.club-register-intro .section-eyebrow {
+    color: #e0b650;
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.club-register-intro h1 {
+    font-size: clamp(2rem, 4vw, 2.8rem);
+    font-weight: 800;
+    line-height: 1.15;
+    margin: 18px 0;
+}
+
+.club-register-intro > p {
+    color: #d5dceb;
+    line-height: 1.8;
+    margin-bottom: 35px;
+}
+
+.register-benefit {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-top: 27px;
+}
+
+.register-benefit > i {
+    color: #e0b650;
+    font-size: 1.5rem;
+}
+
+.register-benefit h3 {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.register-benefit p {
+    color: #d5dceb;
+    font-size: 0.9rem;
+    line-height: 1.6;
+    margin-bottom: 0;
+}
+
+.club-register-form-card {
+    background: #ffffff;
+    border: 1px solid #e5e9f0;
+    border-radius: 18px;
+    padding: 38px;
+    box-shadow: 0 12px 40px rgba(20, 37, 66, 0.06);
+}
+
+.register-form-heading {
+    margin-bottom: 28px;
+}
+
+.register-form-heading h2 {
+    color: #142542;
+    font-size: 1.75rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+}
+
+.register-form-heading p {
+    color: #687386;
+    margin-bottom: 0;
+}
+
+.club-register-form-card .form-label {
+    color: #142542;
+    font-size: 0.92rem;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.club-register-form-card .form-control {
+    border: 1px solid #d9e0eb;
+    border-radius: 9px;
+    padding: 12px 14px;
+    color: #142542;
+    background-color: #ffffff;
+}
+
+.club-register-form-card .form-control:focus {
+    border-color: #bd9134;
+    box-shadow: 0 0 0 3px rgba(189, 145, 52, 0.15);
+}
+
+.club-register-form-card textarea {
+    resize: vertical;
+}
+
+.club-register-form-card .form-text {
+    color: #687386;
+    font-size: 0.82rem;
+    margin-top: 7px;
+}
+
+.optional-label {
+    color: #7a8494;
+    font-weight: 400;
+    font-size: 0.82rem;
+}
+
+.register-submit-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 14px 20px;
+    border: 0;
+    border-radius: 9px;
+    background: #bd9134;
+    color: #142542;
+    font-size: 1rem;
+    font-weight: 800;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.register-submit-btn:hover {
+    background: #d5ad55;
+    transform: translateY(-1px);
+}
+
+.register-login-text {
+    text-align: center;
+    color: #687386;
+    font-size: 0.92rem;
+    margin: 22px 0 18px;
+}
+
+.register-login-text a {
+    color: #142542;
+    font-weight: 700;
+    text-decoration: none;
+}
+
+.register-login-text a:hover {
+    color: #bd9134;
+}
+
+.register-demo-notice {
+    color: #687386;
+    font-size: 0.8rem;
+    line-height: 1.6;
+    text-align: center;
+    margin-bottom: 0;
+}
+
+.register-demo-notice i {
+    color: #bd9134;
+}
+
+@media (max-width: 991px) {
+    .club-register-wrapper {
+        grid-template-columns: 1fr;
+        gap: 25px;
+    }
+
+    .club-register-intro {
+        position: static;
+    }
+}
+
+@media (max-width: 575px) {
+    .club-register-section {
+        padding: 35px 0 50px;
+    }
+
+    .club-register-intro,
+    .club-register-form-card {
+        padding: 25px 20px;
+    }
+
+    .register-form-heading h2 {
+        font-size: 1.45rem;
+    }
+}
+
+
+/* ========================================
+   CLUB SIGN IN PAGE
+======================================== */
+
+.club-login-section {
+    background: #f5f7fb;
+    padding: 65px 15px 80px;
+    min-height: 75vh;
+}
+
+.club-login-card {
+    max-width: 490px;
+    margin: 0 auto;
+    padding: 40px;
+    background: #ffffff;
+    border: 1px solid #e5e9f0;
+    border-radius: 18px;
+    text-align: center;
+    box-shadow: 0 12px 40px rgba(20, 37, 66, 0.07);
+}
+
+.club-login-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #142542;
+    color: #e0b650;
+    border-radius: 18px;
+    font-size: 2rem;
+}
+
+.club-login-card .section-eyebrow {
+    color: #bd9134;
+    font-size: 0.76rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+}
+
+.club-login-card h1 {
+    color: #142542;
+    font-size: 2.1rem;
+    font-weight: 800;
+    margin: 12px 0 10px;
+}
+
+.club-login-subtitle {
+    color: #687386;
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+.club-login-card .form-label {
+    color: #142542;
+    font-size: 0.92rem;
+    font-weight: 700;
+}
+
+.club-login-card .form-control {
+    border: 1px solid #d9e0eb;
+    border-radius: 9px;
+    padding: 12px 14px;
+}
+
+.club-login-card .form-control:focus {
+    border-color: #bd9134;
+    box-shadow: 0 0 0 3px rgba(189, 145, 52, 0.15);
+}
+
+.login-submit-btn,
+.register-club-btn {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    padding: 13px 20px;
+    border-radius: 9px;
+    font-weight: 800;
+    text-decoration: none;
+    transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.login-submit-btn {
+    border: 0;
+    background: #bd9134;
+    color: #142542;
+}
+
+.login-submit-btn:hover {
+    background: #d5ad55;
+    transform: translateY(-1px);
+}
+
+.club-login-divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 28px 0 15px;
+    color: #8992a1;
+    font-size: 0.7rem;
+    font-weight: 800;
+    letter-spacing: 1px;
+}
+
+.club-login-divider::before,
+.club-login-divider::after {
+    content: "";
+    flex: 1;
+    height: 1px;
+    background: #e5e9f0;
+}
+
+.club-register-prompt {
+    color: #687386;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+.register-club-btn {
+    border: 1px solid #142542;
+    color: #142542;
+    background: #ffffff;
+}
+
+.register-club-btn:hover {
+    color: #ffffff;
+    background: #142542;
+}
+
+.back-to-clubs {
+    display: inline-block;
+    margin-top: 22px;
+    color: #687386;
+    font-size: 0.9rem;
+    text-decoration: none;
+}
+
+.back-to-clubs:hover {
+    color: #bd9134;
+}
+
+.login-demo-notice {
+    margin: 24px 0 0;
+    color: #687386;
+    font-size: 0.78rem;
+    line-height: 1.6;
+}
+
+.login-demo-notice i {
+    color: #bd9134;
+}
+
+@media (max-width: 575px) {
+    .club-login-section {
+        padding: 35px 12px 50px;
+    }
+
+    .club-login-card {
+        padding: 28px 20px;
+    }
+
+    .club-login-card h1 {
+        font-size: 1.8rem;
+    }
+}
