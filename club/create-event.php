@@ -39,8 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Please select a valid event time.';
     }
 
-    if ($eventLocation === '') {
-        $errors[] = 'Please enter the event location.';
+    if ($eventLink === '') {
+        $errors[] = 'Please Enter Event Link';
     }
 
     if ($eventAgenda === '') {
@@ -202,17 +202,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
 
                         <div class="mb-4">
-                            <label for="event_location" class="form-label">
-                                Event Location <span class="required-star">*</span>
+                            <label for="event_link" class="form-label">
+                                Event Link <span class="required-star">*</span>
                             </label>
                             <input
-                                type="text"
+                                type="url"
                                 class="form-control"
-                                id="event_location"
-                                name="event_location"
+                                id="event_link"
+                                name="event_link"
                                 maxlength="255"
-                                placeholder="e.g. AUAF Main Campus, Auditorium"
-                                value="<?= htmlspecialchars($eventLocation, ENT_QUOTES, 'UTF-8') ?>"
+                                placeholder="e.g. https://example.com/event"
+                                value="<?= htmlspecialchars($eventLink, ENT_QUOTES, 'UTF-8') ?>"
                                 required
                             >
                         </div>

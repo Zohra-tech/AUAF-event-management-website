@@ -1,57 +1,73 @@
 <?php
-$pageTitle = 'Register Your Club | AUAF Events';
+session_start();
+require_once __DIR__ . '/../config/database.php';
 
 $errors = [];
-$clubName = '';
-$clubEmail = '';
-$clubDescription = '';
-$googleSpaceUrl = '';
+$success = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $clubName = trim($_POST['club_name'] ?? '');
-    $clubEmail = strtolower(trim($_POST['club_email'] ?? ''));
-    $clubDescription = trim($_POST['description'] ?? '');
+    $email = strtolower(trim($_POST['email'] ?? ''));
+    $description = trim($_POST['description'] ?? '');
     $googleSpaceUrl = trim($_POST['google_space_url'] ?? '');
-
     $password = $_POST['password'] ?? '';
     $confirmPassword = $_POST['confirm_password'] ?? '';
 
     if ($clubName === '') {
-        $errors[] = 'Please enter your official club name.';
+        $errors[] = 'Please enter the official club name.';
     }
 
-    if (!filter_var($clubEmail, FILTER_VALIDATE_EMAIL)) {
-        $errors[] = 'Please enter a valid club email address.';
-    } elseif (!str_ends_with($clubEmail, '@auaf.edu.af')) {
-        $errors[] = 'Please use your official AUAF email ending in @auaf.edu.af.';
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL) ||
+        !str_ends_with($email, '@auaf.edu.af')) {
+        $errors[] = 'Please use a valid email ending in @auaf.edu.af.';
     }
 
-    if ($clubDescription === '') {
-        $errors[] = 'Please provide a description of your club.';
-    }
-
-    if ($googleSpaceUrl !== '') {
-        $urlParts = parse_url($googleSpaceUrl);
-
-        if (
-            !filter_var($googleSpaceUrl, FILTER_VALIDATE_URL) ||
-            !in_array(strtolower($urlParts['scheme'] ?? ''), ['http', 'https'], true)
-        ) {
-            $errors[] = 'Please enter a valid Google Space URL.';
-        }
-    }
-
-    if (strlen($password) < 8) {
-        $errors[] = 'Your password must be at least 8 characters long.';
+    if ($password === '' || strlen($password) < 8) {
+        $errors[] = 'Password must contain at least 8 characters.';
     }
 
     if ($password !== $confirmPassword) {
-        $errors[] = 'Your passwords do not match.';
+        $errors[] = 'Passwords do not match.';
     }
 
-    // Database saving will be added after the database schema is available.
+    if ($googleSpaceUrl !== '' &&
+        (!filter_var($googleSpaceUrl, FILTER_VALIDATE_URL) ||
+         !in_array(strtolower(parse_url($googleSpaceUrl, PHP_URL_SCHEME) ?? ''),
+                   ['http', 'https'], true))) {
+        $errors[] = 'Please enter a valid Google Space URL.';
+    }
+
+    if (!$errors) {
+        try {
+            $stmt = $pdo->prepare(
+                'INSERT INTO clubs
+                (club_name, email, description, google_space_url, password_hash)
+                VALUES
+                (:club_name, :email, :description, :google_space_url, :password_hash)'
+            );
+
+            $stmt->execute([
+                'club_name' => $clubName,
+                'email' => $email,
+                'description' => $description,
+                'google_space_url' => $googleSpaceUrl !== ''
+                    ? $googleSpaceUrl : null,
+                'password_hash' => password_hash($password, PASSWORD_DEFAULT),
+            ]);
+
+            $success = 'Your club has been registered successfully. You can now sign in.';
+        } catch (PDOException $e) {
+            if ($e->getCode() === '23000') {
+                $errors[] = 'This club email is already registered.';
+            } else {
+                error_log('Club registration failed: ' . $e->getMessage());
+                $errors[] = 'There is a database error. Please contact the website administrator.';
+            }
+        }
+    }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

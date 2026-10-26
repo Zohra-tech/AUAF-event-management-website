@@ -1,25 +1,48 @@
-<?php
-$pageTitle = 'Club Sign In | AUAF Events';
 
-$email = '';
+<?php
+session_start();
+require_once __DIR__ . '/../config/database.php';
+
 $error = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = strtolower(trim($_POST['club_email'] ?? ''));
+    $email = strtolower(trim($_POST['email'] ?? ''));
     $password = $_POST['password'] ?? '';
 
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $error = 'Please enter a valid email address.';
-    } elseif (!str_ends_with($email, '@auaf.edu.af')) {
-        $error = 'Please use your official AUAF club email.';
-    } elseif ($password === '') {
-        $error = 'Please enter your password.';
+    if (!filter_var($email, FILTER_VALIDATE_EMAIL) ||
+        !str_ends_with($email, '@auaf.edu.af')) {
+        $error = 'Please enter a valid AUAF club email.';
     } else {
-        // Database authentication will be added after the database schema is available.
-        $error = 'There is an error with database. Please contact the website owner or your IT department for assistance.';
+        try {
+            $stmt = $pdo->prepare(
+                'SELECT club_id, club_name, email, password_hash
+                 FROM clubs
+                 WHERE email = :email
+                 LIMIT 1'
+            );
+            $stmt->execute(['email' => $email]);
+            $club = $stmt->fetch();
+
+            if ($club && password_verify($password, $club['password_hash'])) {
+                session_regenerate_id(true);
+
+                $_SESSION['club_id'] = (int) $club['club_id'];
+                $_SESSION['club_name'] = $club['club_name'];
+                $_SESSION['club_email'] = $club['email'];
+
+                header('Location: /club/dashboard.php');
+                exit;
+            }
+
+            $error = 'Invalid email or password.';
+        } catch (PDOException $e) {
+            error_log('Club login failed: ' . $e->getMessage());
+            $error = 'There is a database error. Please contact the website owner or IT staff.';
+        }
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
