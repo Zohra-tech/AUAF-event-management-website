@@ -15,7 +15,7 @@ try {
             e.description,
             e.event_date,
             e.event_time,
-            e.location,
+            e.event_url,
             c.club_id,
             c.club_name
         FROM events e
@@ -57,10 +57,25 @@ try {
     $loadError = true;
 }
 
+$eventUrl = trim($_POST['event_url'] ?? '');
+
+if (
+    !filter_var($eventUrl, FILTER_VALIDATE_URL) ||
+    !in_array(
+        strtolower((string) parse_url($eventUrl, PHP_URL_SCHEME)),
+        ['http', 'https'],
+        true
+    )
+) {
+    $errors[] = 'Please enter a valid virtual event URL.';
+}
+
 function escapeEventPage($value): string
 {
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 }
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">

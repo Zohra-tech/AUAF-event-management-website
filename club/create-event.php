@@ -10,12 +10,11 @@ if (empty($_SESSION['club_id'])) {
 
 $errors = [];
 $success = '';
-
 $eventTitle = '';
 $description = '';
 $eventDate = '';
 $eventTime = '';
-$location = '';
+$eventurl = '';
 $agenda = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
@@ -23,7 +22,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $description = trim($_POST['description'] ?? '');
     $eventDate = trim($_POST['event_date'] ?? '');
     $eventTime = trim($_POST['event_time'] ?? '');
-    $location = trim($_POST['location'] ?? '');
+    $eventurl = trim($_POST['event_url'] ?? '');
     $agenda = trim($_POST['agenda'] ?? '');
 
     if ($eventTitle === '') {
@@ -45,8 +44,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $errors[] = 'Please select a valid event time.';
     }
 
-    if ($location === '') {
-        $errors[] = 'Event location is required.';
+    if ($eventurl === '') {
+        $errors[] = 'Event URL is required.';
     }
 
     if (!$errors) {
@@ -54,10 +53,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt = $pdo->prepare(
                 'INSERT INTO events
                 (club_id, event_title, description, event_date,
-                 event_time, location, agenda, status)
+                 event_time, event_url, agenda, status)
                 VALUES
                 (:club_id, :event_title, :description, :event_date,
-                 :event_time, :location, :agenda, :status)'
+                 :event_time, :event_url, :agenda, :status)'
             );
 
             $stmt->execute([
@@ -66,7 +65,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'description' => $description,
                 'event_date' => $eventDate,
                 'event_time' => $eventTime,
-                'location' => $location,
+                'event_url' => $eventurl,
                 'agenda' => $agenda !== '' ? $agenda : null,
                 'status' => 'upcoming',
             ]);
