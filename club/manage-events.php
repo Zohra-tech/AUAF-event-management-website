@@ -30,9 +30,10 @@ if (isset($_GET['created'])) {
 }
 
 // Process cancellation.
-if ($_SERVER['REQUEST_METHOD'] === 'POST'
-    && ($_POST['action'] ?? '') === 'cancel') {
-
+if (
+    $_SERVER['REQUEST_METHOD'] === 'POST'
+    && ($_POST['action'] ?? '') === 'cancel'
+) {
     $postedToken = $_POST['csrf_token'] ?? '';
 
     if (!hash_equals($_SESSION['csrf_token'], $postedToken)) {
@@ -343,29 +344,50 @@ try {
                                             Edit
                                         </a>
 
+                                    <?php endif; ?>
+
+                                    <!-- View Registrations button -->
+                                    <a
+                                        class="btn btn-outline-primary btn-sm"
+                                        href="/club/event-registrations.php?id=<?= (int) $event['event_id'] ?>"
+                                    >
+                                        <i class="bi bi-people me-1"></i>
+                                        View Registrations
+                                    </a>
+
+                                    <?php if ($event['status'] === 'upcoming'): ?>
+
                                         <form
                                             method="post"
                                             action="/club/manage-events.php"
                                             onsubmit="return confirm('Are you sure you want to cancel this event?');"
                                         >
-                                            <input type="hidden"
-                                                   name="action"
-                                                   value="cancel">
+                                            <input
+                                                type="hidden"
+                                                name="action"
+                                                value="cancel"
+                                            >
 
-                                            <input type="hidden"
-                                                   name="event_id"
-                                                   value="<?= (int) $event['event_id'] ?>">
+                                            <input
+                                                type="hidden"
+                                                name="event_id"
+                                                value="<?= (int) $event['event_id'] ?>"
+                                            >
 
-                                            <input type="hidden"
-                                                   name="csrf_token"
-                                                   value="<?= htmlspecialchars(
-                                                       $_SESSION['csrf_token'],
-                                                       ENT_QUOTES,
-                                                       'UTF-8'
-                                                   ) ?>">
+                                            <input
+                                                type="hidden"
+                                                name="csrf_token"
+                                                value="<?= htmlspecialchars(
+                                                    $_SESSION['csrf_token'],
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                ) ?>"
+                                            >
 
-                                            <button type="submit"
-                                                    class="btn btn-outline-danger btn-sm">
+                                            <button
+                                                type="submit"
+                                                class="btn btn-outline-danger btn-sm"
+                                            >
                                                 <i class="bi bi-x-circle me-1"></i>
                                                 Cancel Event
                                             </button>

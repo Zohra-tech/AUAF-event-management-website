@@ -2323,3 +2323,79 @@ a.btn.btn-gold:hover {
         padding: 20px;
     }
 }
+
+
+
+/* =========================================
+   EVENT REGISTRATION LIST
+========================================= */
+
+.registration-list-back {
+    color: #e6c16a;
+    text-decoration: none;
+}
+
+.registration-list-back:hover {
+    color: #ffffff;
+}
+
+.registration-list-summary {
+    overflow: hidden;
+}
+
+.registration-list-summary .text-muted i {
+    color: #a47b25;
+}
+
+.registration-total-box {
+    background: #f5f0e5;
+    color: #172640;
+}
+
+.registration-total-box > i {
+    color: #a47b25;
+}
+
+.registration-total-number {
+    font-size: 2.6rem;
+    font-weight: 800;
+    line-height: 1.3;
+}
+
+.registration-list-table {
+    background: #ffffff;
+    border: 1px solid #e9edf2;
+    border-radius: 14px;
+}
+
+.registration-list-table table {
+    min-width: 650px;
+}
+
+.registration-list-table thead th {
+    background: #f5f0e5;
+    color: #172640;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    padding: 16px;
+}
+
+.registration-list-table tbody td {
+    padding: 16px;
+}
+
+.registration-student-email {
+    color: #8b671c;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+}
+
+.registration-student-email:hover {
+    text-decoration: underline;
+}
+
+@media (max-width: 576px) {
+    .club-dashboard-hero .display-5 {
+        font-size: 2.1rem;
+    }
+}
