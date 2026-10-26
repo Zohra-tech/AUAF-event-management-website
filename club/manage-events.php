@@ -85,7 +85,7 @@ try {
             e.description,
             e.event_date,
             e.event_time,
-            e.location,
+            e.event_url,
             e.agenda,
             e.status,
             (
