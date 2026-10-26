@@ -1812,3 +1812,122 @@ a.btn.btn-gold:hover {
         width: 100%;
     }
 }
+
+
+/* =========================================
+   CLUB DETAILS PAGE
+========================================= */
+
+.auaf-club-navbar {
+    background: #101d36;
+}
+
+.club-details-hero {
+    background: linear-gradient(135deg, #101d36 0%, #1c3154 100%);
+    padding: 24px 0;
+}
+
+.club-details-back-link {
+    color: #e6c16a;
+    text-decoration: none;
+}
+
+.club-details-back-link:hover {
+    color: #ffffff;
+}
+
+.club-details-hero .club-details-eyebrow {
+    color: #e6c16a;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.club-details-subtitle {
+    color: #d7deea;
+    max-width: 650px;
+    margin-top: 14px;
+    font-size: 1.05rem;
+    line-height: 1.8;
+}
+
+.club-details-info {
+    overflow: hidden;
+}
+
+.club-details-info .club-details-eyebrow,
+.club-details-events .club-details-eyebrow {
+    color: #a47b25;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 10px;
+}
+
+.club-details-description {
+    color: #4d5869;
+    line-height: 1.9;
+    overflow-wrap: anywhere;
+}
+
+.club-details-connect {
+    background: #f5f0e5;
+    color: #172640;
+    height: 100%;
+}
+
+.club-details-connect > i {
+    color: #a47b25;
+}
+
+.club-details-connect p {
+    line-height: 1.7;
+}
+
+.club-details-event-card {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.club-details-event-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(16, 29, 54, 0.10) !important;
+}
+
+.club-details-event-card .card-body {
+    overflow-wrap: anywhere;
+}
+
+.club-details-date {
+    color: #8b671c;
+    font-weight: 700;
+    font-size: 0.9rem;
+}
+
+.club-details-event-card .small i {
+    color: #a47b25;
+}
+
+.club-details-event-card details summary {
+    cursor: pointer;
+    color: #172640;
+}
+
+.club-details-empty {
+    background: #f7f8fa;
+    border: 1px solid #e9edf2;
+}
+
+.club-details-empty > i {
+    color: #a47b25;
+}
+
+@media (max-width: 576px) {
+    .club-details-hero .display-5 {
+        font-size: 2.1rem;
+    }
+
+    .club-details-events .display-6 {
+        font-size: 1.8rem;
+    }
+}
