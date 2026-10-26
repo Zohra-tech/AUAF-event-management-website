@@ -2142,3 +2142,184 @@ a.btn.btn-gold:hover {
         font-size: 2.2rem;
     }
 }
+
+
+/* =========================================
+   CLUB DASHBOARD
+========================================= */
+
+.club-dashboard-page {
+    background: #f7f8fb;
+}
+
+.club-dashboard-navbar {
+    background: #101d36;
+}
+
+.dashboard-brand-label {
+    display: inline-block;
+    margin-left: 8px;
+    padding: 3px 7px;
+    border: 1px solid rgba(230, 193, 106, 0.7);
+    border-radius: 4px;
+    color: #e6c16a;
+    font-size: 0.62rem;
+    letter-spacing: 1px;
+    vertical-align: middle;
+}
+
+.club-dashboard-hero {
+    background: linear-gradient(135deg, #101d36 0%, #1c3154 100%);
+}
+
+.dashboard-eyebrow,
+.dashboard-section-eyebrow {
+    color: #a47b25;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-bottom: 12px;
+}
+
+.dashboard-eyebrow {
+    color: #e6c16a;
+}
+
+.dashboard-hero-text {
+    color: #d7deea;
+    max-width: 680px;
+    line-height: 1.8;
+    margin-top: 14px;
+}
+
+.dashboard-stat-card {
+    background: #ffffff;
+    border: 1px solid #e9edf2;
+    border-radius: 16px;
+    padding: 25px;
+    box-shadow: 0 5px 18px rgba(16, 29, 54, 0.04);
+}
+
+.dashboard-stat-icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f5f0e5;
+    color: #8b671c;
+    border-radius: 12px;
+    font-size: 1.35rem;
+    margin-bottom: 20px;
+}
+
+.dashboard-stat-label {
+    color: #626c7b;
+    margin-bottom: 6px;
+}
+
+.dashboard-stat-number {
+    color: #101d36;
+    font-size: 2.3rem;
+    font-weight: 800;
+    line-height: 1.2;
+    margin-bottom: 8px;
+}
+
+.dashboard-stat-note {
+    color: #858d99;
+    font-size: 0.85rem;
+    margin-bottom: 0;
+}
+
+.dashboard-events-section {
+    min-width: 0;
+}
+
+.dashboard-table-wrapper {
+    background: #ffffff;
+    border: 1px solid #e9edf2;
+    border-radius: 14px;
+}
+
+.dashboard-table-wrapper table {
+    min-width: 680px;
+}
+
+.dashboard-table-wrapper thead th {
+    background: #f5f0e5;
+    color: #172640;
+    font-size: 0.85rem;
+    white-space: nowrap;
+    padding: 16px;
+}
+
+.dashboard-table-wrapper tbody td {
+    padding: 16px;
+}
+
+.dashboard-registration-count {
+    display: inline-block;
+    background: #f5f0e5;
+    color: #775817;
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+}
+
+.dashboard-empty-state {
+    background: #ffffff;
+    border: 1px dashed #d8dee8;
+}
+
+.dashboard-empty-state > i {
+    color: #a47b25;
+}
+
+.dashboard-action-card {
+    height: 100%;
+    min-height: 175px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    background: #ffffff;
+    border: 1px solid #e9edf2;
+    border-radius: 16px;
+    padding: 24px;
+    color: #172640;
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.dashboard-action-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px rgba(16, 29, 54, 0.08);
+    color: #8b671c;
+}
+
+.dashboard-action-card > i {
+    color: #a47b25;
+    font-size: 1.8rem;
+    margin-bottom: 18px;
+}
+
+.dashboard-action-card > span {
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.dashboard-action-card > small {
+    color: #77808e;
+}
+
+@media (max-width: 576px) {
+    .club-dashboard-hero .display-5 {
+        font-size: 2.1rem;
+    }
+
+    .dashboard-stat-card {
+        padding: 20px;
+    }
+}
