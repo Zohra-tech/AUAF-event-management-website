@@ -56,7 +56,7 @@ require_once __DIR__ . '/includes/header.php';
     <div class="text-center mb-5">
         <h2>Everything Happening on Campus</h2>
         <p class="text-secondary">
-            Find events, discover student organizations, and share feedback.
+            Find events, discover student organizations, and connect with the AUAF community.
         </p>
     </div>
 
@@ -86,12 +86,12 @@ require_once __DIR__ . '/includes/header.php';
 
         <div class="col-md-6 col-lg-4">
             <section class="feature-card">
-                <h3>Registration & Feedback</h3>
+                <h3>Register Your Club</h3>
                 <p>
-                    Sign in to access available activities and
-                    provide feedback on events.
+                    If you are a student club representative,
+                    register your Club to manage events.
                 </p>
-                <a href="pages/login.php">Sign in →</a>
+                <a href="pages/register.php">Register your club →</a>
             </section>
         </div>
 

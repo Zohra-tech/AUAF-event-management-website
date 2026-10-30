@@ -100,9 +100,7 @@ $clubName = $_SESSION['club_name'] ?? 'Your Student Club';
             <div>
                 <strong>Dashboard preview</strong>
                 <p>
-                    Your club's information and statistics will appear here
-                    after database integration and sign-in authentication
-                    are configured.
+                    Your club's information and statistics is here!
                 </p>
             </div>
         </div>
@@ -124,7 +122,6 @@ $clubName = $_SESSION['club_name'] ?? 'Your Student Club';
 
                 <h3>Events Created</h3>
                 <p class="stat-value">—</p>
-                <span>Available after database connection</span>
             </article>
 
             <article class="dashboard-stat-card">
@@ -134,7 +131,6 @@ $clubName = $_SESSION['club_name'] ?? 'Your Student Club';
 
                 <h3>Upcoming Events</h3>
                 <p class="stat-value">—</p>
-                <span>Available after database connection</span>
             </article>
 
             <article class="dashboard-stat-card">
@@ -144,7 +140,6 @@ $clubName = $_SESSION['club_name'] ?? 'Your Student Club';
 
                 <h3>Student Registrations</h3>
                 <p class="stat-value">—</p>
-                <span>Available after database connection</span>
             </article>
 
         </div>
