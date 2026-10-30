@@ -1,7 +1,9 @@
-
 <?php
 session_start();
+
 require_once __DIR__ . '/../config/database.php';
+
+$pageTitle = 'Create Event | AUAF';
 
 if (empty($_SESSION['club_id'])) {
     header('Location: /club/login.php');
@@ -10,6 +12,7 @@ if (empty($_SESSION['club_id'])) {
 
 $errors = [];
 $success = '';
+
 $eventTitle = '';
 $description = '';
 $eventDate = '';
@@ -18,6 +21,8 @@ $eventurl = '';
 $agenda = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    // Collect form values
     $eventTitle = trim($_POST['event_title'] ?? '');
     $description = trim($_POST['description'] ?? '');
     $eventDate = trim($_POST['event_date'] ?? '');
@@ -25,38 +30,81 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $eventurl = trim($_POST['event_url'] ?? '');
     $agenda = trim($_POST['agenda'] ?? '');
 
+    // Validate event title
     if ($eventTitle === '') {
         $errors[] = 'Event title is required.';
     }
 
+    // Validate event description
     if ($description === '') {
         $errors[] = 'Event description is required.';
     }
 
+    // Validate event date
     $date = DateTimeImmutable::createFromFormat('!Y-m-d', $eventDate);
-    if (!$date || $date->format('Y-m-d') !== $eventDate ||
-        $eventDate < date('Y-m-d')) {
+
+    if (
+        !$date ||
+        $date->format('Y-m-d') !== $eventDate ||
+        $eventDate < date('Y-m-d')
+    ) {
         $errors[] = 'Please select a valid date that is not in the past.';
     }
 
+    // Validate event time
     $time = DateTimeImmutable::createFromFormat('!H:i', $eventTime);
+
     if (!$time || $time->format('H:i') !== $eventTime) {
         $errors[] = 'Please select a valid event time.';
     }
 
+    // Validate virtual event URL
     if ($eventurl === '') {
         $errors[] = 'Event URL is required.';
+    } elseif (
+        !filter_var($eventurl, FILTER_VALIDATE_URL) ||
+        !in_array(
+            strtolower((string) parse_url($eventurl, PHP_URL_SCHEME)),
+            ['http', 'https'],
+            true
+        )
+    ) {
+        $errors[] = 'Please enter a valid virtual event URL starting with https:// or http://.';
+    } elseif (strlen($eventurl) > 2048) {
+        $errors[] = 'The event URL is too long.';
     }
 
-    if (!$errors) {
+    // Validate agenda
+    if ($agenda === '') {
+        $errors[] = 'Event agenda is required.';
+    }
+
+    // Save event if validation passes
+    if (empty($errors)) {
         try {
             $stmt = $pdo->prepare(
                 'INSERT INTO events
-                (club_id, event_title, description, event_date,
-                 event_time, event_url, agenda, status)
+                (
+                    club_id,
+                    event_title,
+                    description,
+                    event_date,
+                    event_time,
+                    event_url,
+                    agenda,
+                    status
+                )
                 VALUES
-                (:club_id, :event_title, :description, :event_date,
-                 :event_time, :event_url, :agenda, :status)'
+                (
+                    :club_id,
+                    :event_title,
+                    :description,
+                    :event_date,
+                    :event_time,
+                    :event_url,
+                    :agenda,
+                    :status
+                )'
             );
 
             $stmt->execute([
@@ -66,12 +114,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 'event_date' => $eventDate,
                 'event_time' => $eventTime,
                 'event_url' => $eventurl,
-                'agenda' => $agenda !== '' ? $agenda : null,
+                'agenda' => $agenda,
                 'status' => 'upcoming',
             ]);
 
             header('Location: /club/manage-events.php?created=1');
             exit;
+
         } catch (PDOException $e) {
             error_log('Event creation failed: ' . $e->getMessage());
             $errors[] = 'Unable to save the event. Please contact the website administrator.';
@@ -113,7 +162,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <a href="/pages/events.php">Events</a>
             <a href="/pages/clubs.php">Student Clubs</a>
             <a href="/club/dashboard.php">Dashboard</a>
-            <a href="/club/login.php">Sign In</a>
+            <a href="/club/logout.php">Sign Out</a>
         </div>
     </div>
 </nav>
@@ -130,7 +179,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
 
         <span class="section-eyebrow">CLUB EVENT MANAGEMENT</span>
+
         <h1>Create a New Event</h1>
+
         <p>
             Share your next activity with the AUAF community.
             Enter the details below to prepare your event.
@@ -150,6 +201,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="create-event-heading-icon">
                             <i class="bi bi-calendar-plus"></i>
                         </div>
+
                         <div>
                             <h2>Event Information</h2>
                             <p>Complete all required fields.</p>
@@ -159,9 +211,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <?php if (!empty($errors)): ?>
                         <div class="alert alert-danger" role="alert">
                             <strong>Please correct the following:</strong>
+
                             <ul class="mb-0 mt-2">
                                 <?php foreach ($errors as $error): ?>
-                                    <li><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></li>
+                                    <li>
+                                        <?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?>
+                                    </li>
                                 <?php endforeach; ?>
                             </ul>
                         </div>
@@ -169,10 +224,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                     <form action="" method="post">
 
+                        <!-- Event Title -->
                         <div class="mb-4">
                             <label for="event_title" class="form-label">
                                 Event Title <span class="required-star">*</span>
                             </label>
+
                             <input
                                 type="text"
                                 class="form-control"
@@ -185,25 +242,30 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             >
                         </div>
 
+                        <!-- Event Description -->
                         <div class="mb-4">
-                            <label for="event_description" class="form-label">
+                            <label for="description" class="form-label">
                                 Event Description <span class="required-star">*</span>
                             </label>
+
                             <textarea
                                 class="form-control"
-                                id="event_description"
-                                name="event_description"
+                                id="description"
+                                name="description"
                                 rows="4"
                                 placeholder="Describe the purpose of your event and what participants can expect."
                                 required
-                            ><?= htmlspecialchars($eventDescription, ENT_QUOTES, 'UTF-8') ?></textarea>
+                            ><?= htmlspecialchars($description, ENT_QUOTES, 'UTF-8') ?></textarea>
                         </div>
 
+                        <!-- Date and Time -->
                         <div class="row">
+
                             <div class="col-md-6 mb-4">
                                 <label for="event_date" class="form-label">
                                     Event Date <span class="required-star">*</span>
                                 </label>
+
                                 <input
                                     type="date"
                                     class="form-control"
@@ -219,6 +281,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <label for="event_time" class="form-label">
                                     Event Time <span class="required-star">*</span>
                                 </label>
+
                                 <input
                                     type="time"
                                     class="form-control"
@@ -228,39 +291,50 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     required
                                 >
                             </div>
+
                         </div>
 
+                        <!-- Virtual Event URL -->
                         <div class="mb-4">
-                            <label for="event_link" class="form-label">
-                                Event Link <span class="required-star">*</span>
+                            <label for="event_url" class="form-label">
+                                Virtual Event URL <span class="required-star">*</span>
                             </label>
+
                             <input
                                 type="url"
                                 class="form-control"
-                                id="event_link"
-                                name="event_link"
-                                maxlength="255"
-                                placeholder="e.g. https://example.com/event"
-                                value="<?= htmlspecialchars($eventLink, ENT_QUOTES, 'UTF-8') ?>"
+                                id="event_url"
+                                name="event_url"
+                                maxlength="2048"
+                                placeholder="e.g. https://meet.google.com/..."
+                                value="<?= htmlspecialchars($eventurl, ENT_QUOTES, 'UTF-8') ?>"
                                 required
                             >
+
+                            <small class="text-muted">
+                                Enter the Google Meet, Zoom, or other virtual meeting link.
+                            </small>
                         </div>
 
+                        <!-- Event Agenda -->
                         <div class="mb-4">
-                            <label for="event_agenda" class="form-label">
+                            <label for="agenda" class="form-label">
                                 Event Agenda <span class="required-star">*</span>
                             </label>
+
                             <textarea
                                 class="form-control"
-                                id="event_agenda"
-                                name="event_agenda"
+                                id="agenda"
+                                name="agenda"
                                 rows="5"
                                 placeholder="Outline the topics, activities, or schedule for your event."
                                 required
-                            ><?= htmlspecialchars($eventAgenda, ENT_QUOTES, 'UTF-8') ?></textarea>
+                            ><?= htmlspecialchars($agenda, ENT_QUOTES, 'UTF-8') ?></textarea>
                         </div>
 
+                        <!-- Form Actions -->
                         <div class="create-event-form-actions">
+
                             <a href="/club/dashboard.php" class="event-cancel-btn">
                                 Cancel
                             </a>
@@ -269,6 +343,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 <i class="bi bi-plus-circle"></i>
                                 Prepare Event
                             </button>
+
                         </div>
 
                     </form>
@@ -278,6 +353,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- Sidebar -->
             <aside class="create-event-sidebar">
                 <div class="event-guidelines-card">
+
                     <div class="guidelines-icon">
                         <i class="bi bi-lightbulb"></i>
                     </div>
@@ -287,9 +363,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <ul>
                         <li>Choose a clear, descriptive event title.</li>
                         <li>Explain who should attend and what they will learn.</li>
-                        <li>Double-check your date, time, and venue.</li>
+                        <li>Double-check your event date and time.</li>
+                        <li>Provide a valid virtual meeting URL.</li>
                         <li>Provide an agenda so students know what to expect.</li>
                     </ul>
+
                 </div>
             </aside>
 
@@ -300,9 +378,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <!-- Footer -->
 <footer class="site-footer">
     <div class="container">
+
         <div class="row gy-4">
+
             <div class="col-lg-6">
                 <a class="footer-brand" href="/index.php">AUAF EVENTS</a>
+
                 <p class="footer-description">
                     Discover university events, student organizations,
                     and opportunities to connect with the AUAF community.
@@ -315,15 +396,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <a href="/pages/events.php">Upcoming Events</a>
                 <a href="/pages/clubs.php">Student Clubs</a>
             </div>
+
         </div>
 
         <div class="footer-bottom">
             <span>&copy; <?= date('Y') ?> AUAF Event Management Website</span>
             <span>Designed for the AUAF community</span>
         </div>
+
     </div>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
 </body>
 </html>

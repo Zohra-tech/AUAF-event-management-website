@@ -7,6 +7,19 @@ if (empty($_SESSION['club_id'])) {
 }
 
 $clubName = $_SESSION['club_name'] ?? 'Your Student Club';
+
+session_start();
+
+if (empty($_SESSION['club_id'])) {
+    header('Location: /club/login.php');
+    exit;
+}
+
+$clubName = $_SESSION['club_name'] ?? 'Your Student Club';
+
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
