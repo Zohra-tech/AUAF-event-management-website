@@ -11,47 +11,67 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $email = strtolower(trim($_POST['email'] ?? ''));
     $password = $_POST['password'] ?? '';
 
-    if (
-        !filter_var($email, FILTER_VALIDATE_EMAIL) ||
-        !str_ends_with($email, '@auaf.edu.af')
-    ) {
-        $error = 'Please enter a valid AUAF club email address.';
+    // Validate required fields.
+    if ($email === '') {
+
+        $error = 'Please enter your email address.';
 
     } elseif ($password === '') {
+
         $error = 'Please enter your password.';
 
+    } elseif (
+        !filter_var($email, FILTER_VALIDATE_EMAIL) ||
+        !str_ends_with($email, '@auaf.edu.af') ||
+        strlen($email) > 254
+    ) {
+
+        $error = 'Please enter a valid AUAF club email ending in @auaf.edu.af.';
+
     } else {
+
         try {
+
+            // Find the club account.
             $stmt = $pdo->prepare(
                 'SELECT club_id, club_name, email, password_hash
                  FROM clubs
-                 WHERE email = :email
+                 WHERE LOWER(TRIM(email)) = :email
                  LIMIT 1'
             );
 
-            $stmt->execute(['email' => $email]);
+            $stmt->execute([
+                'email' => $email
+            ]);
 
-            $club = $stmt->fetch();
+            $club = $stmt->fetch(PDO::FETCH_ASSOC);
 
-            if (
-                $club &&
-                password_verify($password, $club['password_hash'])
-            ) {
+            if (!$club) {
+
+                $error = 'No club account was found with this email. Please register first.';
+
+            } elseif (!password_verify($password, $club['password_hash'])) {
+
+                $error = 'Incorrect password. Please try again.';
+
+            } else {
+
+                // Successful login.
                 session_regenerate_id(true);
 
                 $_SESSION['club_id'] = (int) $club['club_id'];
                 $_SESSION['club_name'] = $club['club_name'];
                 $_SESSION['club_email'] = $club['email'];
 
+                // Redirect to club dashboard.
                 header('Location: dashboard.php');
                 exit;
-
-            } else {
-                $error = 'Invalid email or password.';
             }
 
         } catch (PDOException $e) {
+
             error_log('Club login error: ' . $e->getMessage());
+
             $error = 'Unable to process your login. Please try again.';
         }
     }
@@ -60,6 +80,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -84,6 +105,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             align-items: center;
             justify-content: center;
             font-family: Arial, sans-serif;
+            padding: 20px;
         }
 
         .login-card {
@@ -131,6 +153,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border-radius: 8px;
             font-weight: 600;
             width: 100%;
+            cursor: pointer;
+            transition: 0.3s;
         }
 
         .login-btn:hover {
@@ -160,6 +184,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <div class="text-center mb-4">
         <h2 class="login-title">Club Login</h2>
+
         <p class="text-muted">
             Sign in to manage your AUAF club events.
         </p>
@@ -171,7 +196,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </div>
     <?php endif; ?>
 
-    <form method="POST" action="">
+    <form method="POST" action="login.php">
 
         <div class="mb-3">
             <label for="email" class="form-label">
@@ -185,6 +210,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 class="form-control"
                 placeholder="club@auaf.edu.af"
                 value="<?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?>"
+                maxlength="254"
+                autocomplete="username"
                 required
             >
         </div>
@@ -200,6 +227,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 id="password"
                 class="form-control"
                 placeholder="Enter your password"
+                autocomplete="current-password"
                 required
             >
         </div>
@@ -216,7 +244,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             Don't have a club account?
         </p>
 
-        <a href="\pages\register.php" class="register-link">
+        <a href="register.php" class="register-link">
             Register Your Club
         </a>
     </div>

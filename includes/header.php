@@ -1,5 +1,9 @@
 <?php
 $pageTitle = $pageTitle ?? 'AUAF Event Management';
+
+if (session_status() === PHP_SESSION_NONE) {
+    session_start();
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -26,7 +30,7 @@ $pageTitle = $pageTitle ?? 'AUAF Event Management';
             <a href="/index.php">Home</a>
             <a href="/pages/events.php">Events</a>
             <a href="/pages/clubs.php">Clubs</a>
-            <a href="/pages/login.php">Sign In</a>
+            <a href="/club/login.php">Sign In</a>
             <a href="/pages/club-signup.php">Club Sign Up</a>
         </div>
     </div>

@@ -71,7 +71,7 @@ if ($result && $result->num_rows > 0) {
                     <a class="nav-link" href="#about">About</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="pages/login.php">Sign In</a>
+                    <a class="nav-link" href="club/login.php">Sign In</a>
                 </li>
                 <li class="nav-item">
                     <a class="btn btn-gold" href="pages/events.php">

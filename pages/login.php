@@ -1,43 +1,79 @@
-
 <?php
 session_start();
+
 require_once __DIR__ . '/../config/database.php';
 
 $error = '';
+$email = '';
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
     $email = strtolower(trim($_POST['email'] ?? ''));
     $password = $_POST['password'] ?? '';
 
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL) ||
-        !str_ends_with($email, '@auaf.edu.af')) {
-        $error = 'Please enter a valid AUAF club email.';
-    } else {
-        try {
-            $stmt = $pdo->prepare(
-                'SELECT club_id, club_name, email, password_hash
-                 FROM clubs
-                 WHERE email = :email
-                 LIMIT 1'
-            );
-            $stmt->execute(['email' => $email]);
-            $club = $stmt->fetch();
+    // Validate email and password
+    if ($email === '') {
 
-            if ($club && password_verify($password, $club['password_hash'])) {
+        $error = 'Please enter your email address.';
+
+    } elseif ($password === '') {
+
+        $error = 'Please enter your password.';
+
+    } elseif (
+        !filter_var($email, FILTER_VALIDATE_EMAIL) ||
+        !str_ends_with($email, '@auaf.edu.af') ||
+        strlen($email) > 254
+    ) {
+
+        $error = 'Please enter a valid AUAF club email ending in @auaf.edu.af.';
+
+    } else {
+
+        try {
+
+            // Find club account
+            $stmt = $pdo->prepare(
+                "SELECT club_id, club_name, email, password_hash
+                 FROM clubs
+                 WHERE LOWER(TRIM(email)) = :email
+                 LIMIT 1"
+            );
+
+            $stmt->execute([
+                'email' => $email
+            ]);
+
+            $club = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if (!$club) {
+
+                $error = 'No club account found with this email. Please register first.';
+
+            } elseif (!password_verify($password, $club['password_hash'])) {
+
+                $error = 'Incorrect password. Please try again.';
+
+            } else {
+
+                // Regenerate session ID after successful login
                 session_regenerate_id(true);
 
+                // Store club information in session
                 $_SESSION['club_id'] = (int) $club['club_id'];
                 $_SESSION['club_name'] = $club['club_name'];
                 $_SESSION['club_email'] = $club['email'];
 
+                // Redirect to dashboard
                 header('Location: /club/dashboard.php');
                 exit;
             }
 
-            $error = 'Invalid email or password.';
         } catch (PDOException $e) {
-            error_log('Club login failed: ' . $e->getMessage());
-            $error = 'There is a database error. Please contact the website owner or IT staff.';
+
+            error_log('Club login error: ' . $e->getMessage());
+
+            $error = 'Unable to process your login. Please try again.';
         }
     }
 }
@@ -118,7 +154,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         type="email"
                         class="form-control"
                         id="club_email"
-                        name="club_email"
+                        name="email"
                         placeholder="clubname@auaf.edu.af"
                         value="<?= htmlspecialchars($email, ENT_QUOTES, 'UTF-8') ?>"
                         maxlength="254"

@@ -21,11 +21,18 @@ $registrationSuccess = isset($_GET['registered']) &&
     $_GET['registered'] === '1';
 
 try {
-    // Load the selected event.
+    // Load the selected event and its club.
     $stmt = $pdo->prepare(
-        "SELECT e.event_id, e.event_title, e.description,
-                e.event_date, e.event_time, e.event_url, e.agenda,
-                c.club_id, c.club_name
+        "SELECT
+            e.event_id,
+            e.event_title,
+            e.description,
+            e.event_date,
+            e.event_time,
+            e.event_url,
+            e.agenda,
+            c.club_id,
+            c.club_name
          FROM events e
          INNER JOIN clubs c ON c.club_id = e.club_id
          WHERE e.event_id = :event_id
@@ -35,17 +42,18 @@ try {
     );
 
     $stmt->execute(['event_id' => $eventId]);
-    $event = $stmt->fetch();
+    $event = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$event) {
         http_response_code(404);
     }
 
-    // Create a CSRF token for the registration form.
+    // Generate CSRF token.
     if (empty($_SESSION['event_registration_csrf'])) {
         $_SESSION['event_registration_csrf'] = bin2hex(random_bytes(32));
     }
 
+    // Process student registration.
     if (
         $event &&
         $_SERVER['REQUEST_METHOD'] === 'POST' &&
@@ -58,6 +66,7 @@ try {
         $submittedToken = $_POST['csrf_token'] ?? '';
         $sessionToken = $_SESSION['event_registration_csrf'] ?? '';
 
+        // Verify CSRF token.
         if (
             !is_string($submittedToken) ||
             !is_string($sessionToken) ||
@@ -67,18 +76,21 @@ try {
             $errors[] = 'Your form session has expired. Please refresh the page and try again.';
         }
 
+        // Validate first name.
         if ($firstName === '') {
             $errors[] = 'Please enter your first name.';
         } elseif (mb_strlen($firstName) > 100) {
             $errors[] = 'Your first name must not exceed 100 characters.';
         }
 
+        // Validate last name.
         if ($lastName === '') {
             $errors[] = 'Please enter your last name.';
         } elseif (mb_strlen($lastName) > 100) {
             $errors[] = 'Your last name must not exceed 100 characters.';
         }
 
+        // Validate AUAF student email.
         if (
             !filter_var($studentEmail, FILTER_VALIDATE_EMAIL) ||
             !str_ends_with($studentEmail, '@auaf.edu.af') ||
@@ -87,6 +99,7 @@ try {
             $errors[] = 'Please enter a valid AUAF student email ending in @auaf.edu.af.';
         }
 
+        // Insert registration if validation passes.
         if (empty($errors)) {
             try {
                 $stmt = $pdo->prepare(
@@ -113,7 +126,6 @@ try {
                 exit;
 
             } catch (PDOException $e) {
-                // SQLSTATE 23000 includes a duplicate event/email registration.
                 if ($e->getCode() === '23000') {
                     $errors[] = 'This email address is already registered for this event.';
                 } else {
@@ -127,7 +139,7 @@ try {
 } catch (PDOException $e) {
     error_log('Unable to load event registration page: ' . $e->getMessage());
     http_response_code(500);
-    exit('Unable to load this event. Please contact the website administrator.');
+    exit('Unable to load this event. Please try again later.');
 }
 
 function escapeRegistration($value): string
@@ -135,6 +147,7 @@ function escapeRegistration($value): string
     return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -216,9 +229,8 @@ function escapeRegistration($value): string
         <div class="container py-5">
 
             <a
-                href="/pages/club-details.php?id=<?= (int) ($_GET['club_id'] ?? 0) ?>"
+                href="/pages/club-details.php?id=<?= (int) $event['club_id'] ?>"
                 class="registration-back-link"
-                onclick="if (!this.href.includes('club_id=')) { return false; }"
             >
                 <i class="bi bi-arrow-left me-2"></i>
                 View Club
@@ -286,10 +298,14 @@ function escapeRegistration($value): string
                         </p>
 
                         <p class="mb-0">
-                            <i class="bi bi-geo-alt me-2"></i>
+                            <i class="bi bi-link-45deg me-2"></i>
                             <strong>Event URL:</strong><br>
                             <span class="ms-4">
-                                <a href="<?= escapeRegistration($event['event_url']) ?>" target="_blank" rel="noopener noreferrer">
+                                <a
+                                    href="<?= escapeRegistration($event['event_url']) ?>"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                >
                                     <?= escapeRegistration($event['event_url']) ?>
                                 </a>
                             </span>
@@ -332,9 +348,8 @@ function escapeRegistration($value): string
                             </a>
 
                             <a
-                                href="/pages/club-details.php?id=<?= (int) $eventId ?>"
+                                href="/pages/club-details.php?id=<?= (int) $event['club_id'] ?>"
                                 class="btn btn-outline-secondary ms-2"
-                                onclick="return false;"
                             >
                                 View Club
                             </a>

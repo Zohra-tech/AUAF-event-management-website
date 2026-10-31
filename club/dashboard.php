@@ -1,8 +1,11 @@
 <?php
 session_start();
 
-if (empty($_SESSION['club_id'])) {
-    header('Location: /club/login.php');
+require_once __DIR__ . '/../config/database.php';
+
+// Protect dashboard from users who are not logged in.
+if (!isset($_SESSION['club_id'])) {
+    header('Location: login.php');
     exit;
 }
 
@@ -51,11 +54,24 @@ $clubName = $_SESSION['club_name'] ?? 'Your Student Club';
         <a class="brand" href="/index.php">AUAF EVENTS</a>
 
         <div class="nav-links">
-            <a href="/index.php">Home</a>
-            <a href="/pages/events.php">Events</a>
-            <a href="/pages/clubs.php">Student Clubs</a>
-            <a href="/club/dashboard.php" class="active">Dashboard</a>
-            <a href="/club/login.php">Sign In</a>
+            <a class="nav-links" href="/index.php">Home</a>
+            <a class="nav-links" href="/pages/events.php">Events</a>
+            <a class="nav-links" href="/pages/clubs.php">Student Clubs</a>
+
+        <?php if (isset($_SESSION['club_id'])): ?>
+            <a class="nav-links" href="/club/dashboard.php">
+                Dashboard
+            </a>
+            <a class="nav-links" href="/club/logout.php">
+                Sign Out
+            </a>
+        <?php else: ?>
+            <a class="nav-links" href="/club/login.php">
+                Sign In
+            </a>
+        <?php endif; ?>
+
+        </div>
         </div>
 
     </div>
